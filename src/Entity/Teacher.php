@@ -19,6 +19,8 @@ class Teacher
     #[ORM\Column(length: 255)]
     private ?string $lastName = null;
 
+    #[ORM\Column]
+    private ?bool $tutor = null;
 
     public function getId(): ?int
     {
@@ -49,4 +51,15 @@ class Teacher
         return $this;
     }
 
+    public function isTutor(): ?bool
+    {
+        return $this->tutor;
+    }
+
+    public function setTutor(bool $tutor): static
+    {
+        $this->tutor = $tutor;
+
+        return $this;
+    }
 }

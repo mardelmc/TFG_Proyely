@@ -28,6 +28,14 @@ class Group
     #[ORM\JoinTable(name: 'group_subject')]
     private Collection $subjects;
 
+    #[ORM\OneToOne(targetEntity: Teacher::class, inversedBy: 'tutoredGroup')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Teacher $tutor = null;
+
+    #[ORM\ManyToOne(targetEntity: AcademicYear::class, inversedBy: 'groups')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?AcademicYear $academicYear = null;
+
     public function __construct() {
         $this->subjects = new ArrayCollection();
         $this->students = new ArrayCollection();
@@ -93,6 +101,27 @@ class Group
         if ($this->subjects->removeElement($subject)) {
             $subject->removeGroup($this);
         }
+        return $this;
+    }
+
+    public function getTutor(): ?Teacher
+    {
+        return $this->tutor;
+    }
+
+    public function setTutor(?Teacher $teacher): self
+    {
+        $this->tutor = $teacher;
+
+        return $this;
+    }
+
+    public function getAcademicYear(): ?AcademicYear {
+        return $this->academicYear;
+    }
+
+    public function setAcademicYear(?AcademicYear $academicYear): self {
+        $this->academicYear = $academicYear;
         return $this;
     }
 }

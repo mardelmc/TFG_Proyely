@@ -24,6 +24,9 @@ class Subject
     #[ORM\ManyToMany(targetEntity: Group::class, mappedBy: 'subjects')]
     private Collection $groups;
 
+    #[ORM\ManyToMany(targetEntity: Project::class, mappedBy: 'subjects')]
+    private Collection $projects;
+
     public function __construct() {
         $this->groups = new ArrayCollection();
     }
@@ -69,5 +72,22 @@ class Subject
         return $this;
     }
 
+    public function getProjects(): Collection {
+        return $this->projects;
+    }
 
+    public function addProject(Project $project): self {
+        if (!$this->projects->contains($project)) {
+            $this->projects[] = $project;
+            $project->addSubject($this);
+        }
+        return $this;
+    }
+
+    public function removeProject(Project $project): self {
+        if ($this->projects->removeElement($project)) {
+            $project->removeSubject($this);
+        }
+        return $this;
+    }
 }

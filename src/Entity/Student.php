@@ -28,6 +28,9 @@ class Student
     #[ORM\OneToOne(targetEntity: Project::class, mappedBy: 'student')]
     private ?Project $project = null;
 
+    #[ORM\ManyToMany(targetEntity: Subject::class, inversedBy: 'projects')]
+    private Collection $subjects;
+
     public function getId(): ?int {
         return $this->id;
     }
@@ -74,6 +77,22 @@ class Student
 
     public function setProject(?Project $project): self {
         $this->project = $project;
+        return $this;
+    }
+
+    public function getSubjects(): Collection {
+        return $this->subjects;
+    }
+
+    public function addSubject(Subject $subject): self {
+        if (!$this->subjects->contains($subject)) {
+            $this->subjects[] = $subject;
+        }
+        return $this;
+    }
+
+    public function removeSubject(Subject $subject): self {
+        $this->subjects->removeElement($subject);
         return $this;
     }
 }

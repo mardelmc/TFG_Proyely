@@ -22,6 +22,10 @@ class Project
     #[ORM\JoinColumn(nullable: false)]
     private ?Student $student = null;
 
+    #[ORM\ManyToOne(targetEntity: Teacher::class, inversedBy: 'projects')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Teacher $proposedBy = null;
+
     public function getId(): ?int {
         return $this->id;
     }
@@ -53,5 +57,14 @@ class Project
         return $this;
     }
 
+    public function getProposedBy(): ?Teacher
+    {
+        return $this->proposedBy;
+    }
 
+    public function setProposedBy(?Teacher $teacher): self
+    {
+        $this->proposedBy = $teacher;
+        return $this;
+    }
 }

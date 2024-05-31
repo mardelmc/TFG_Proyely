@@ -81,6 +81,6 @@
         "symfony/monolog-bundle": "^3.0",
         "symfony/stopwatch": "5.4.*",
         "symfony/web-profiler-bundle": "5.4.*",
-        "zenstruck/foundry": "^1.36"
+        "zenstruck/foundry": "^1.37"
     }
 }

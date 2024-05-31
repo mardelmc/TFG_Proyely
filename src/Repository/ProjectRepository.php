@@ -16,6 +16,18 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ProjectRepository extends ServiceEntityRepository
 {
+    public function add(Project $project): void
+    {
+        $this->getEntityManager()->persist($project);
+    }
+    public function save(): void
+    {
+        $this->getEntityManager()->flush();
+    }
+    public function remove(Project $project): void
+    {
+        $this->getEntityManager()->remove($project);
+    }
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Project::class);

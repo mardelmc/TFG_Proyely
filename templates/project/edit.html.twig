@@ -1,0 +1,21 @@
+{% extends 'layout.html.twig' %}
+{% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
+{% block content %}
+    {% if magazine.id is null %}
+        <h1>Datos del nueva revista</h1>
+    {% else %}
+        <h1>Modificar datos de la revista</h1>
+    {% endif %}
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    {{ form_end(form) }}
+    {% if is_granted('ROLE_MANAGER') %}
+        <a href="{{path('magazine_delete', {'serial': magazine.serial})  }}">Eliminar</a>
+    {% endif %}
+{% endblock %}
+
+{% block title %}
+
+{% endblock %}
+

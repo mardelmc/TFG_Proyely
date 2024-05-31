@@ -1,1 +1,33 @@
-<
+{% extends 'base.html.twig' %}
+
+{% block title %}Lista de proyectos{{ parent() }}{% endblock %}
+{% block content %}
+    <h1>Proyectos</h1>
+
+        <a href={{ path('project_new') }}>Crear Nuevo Proyecto</a>
+
+    <table class="table table-bordered table-hover table-stripped">
+        <thead>
+        <tr>
+            <th>--</th>
+            <th>--</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for project in projects %}
+                <tr>
+                    <td>{{ project.name }}</td>
+                    <td>{{ project.description }}</td>
+                    <td>{{ project.student}}</td>
+
+                    <td><a href={{ path('project_edit', {'serial': proyect.id})  }}><i class="fa-solid fa-pencil"></i></a></td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="3">No hay proyectos</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

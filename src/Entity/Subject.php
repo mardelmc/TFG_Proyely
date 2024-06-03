@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -24,11 +23,16 @@ class Subject
     #[ORM\ManyToMany(targetEntity: Group::class, mappedBy: 'subjects')]
     private Collection $groups;
 
-    #[ORM\ManyToMany(targetEntity: Project::class, mappedBy: 'subjects')]
+    #[ORM\ManyToMany(targetEntity: Project::class, inversedBy: 'subjects')]
     private Collection $projects;
+
+    #[ORM\ManyToMany(targetEntity: Student::class, inversedBy: 'subjects')]
+    private Collection $students;
 
     public function __construct() {
         $this->groups = new ArrayCollection();
+        $this->projects = new ArrayCollection();
+        $this->students = new ArrayCollection();
     }
 
     public function getId(): ?int {
@@ -87,6 +91,25 @@ class Subject
     public function removeProject(Project $project): self {
         if ($this->projects->removeElement($project)) {
             $project->removeSubject($this);
+        }
+        return $this;
+    }
+
+    public function getStudents(): Collection { // Add this method
+        return $this->students;
+    }
+
+    public function addStudent(Student $student): self { // Add this method
+        if (!$this->students->contains($student)) {
+            $this->students[] = $student;
+            $student->addSubject($this);
+        }
+        return $this;
+    }
+
+    public function removeStudent(Student $student): self { // Add this method
+        if ($this->students->removeElement($student)) {
+            $student->removeSubject($this);
         }
         return $this;
     }

@@ -2,6 +2,8 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use App\Repository\ProjectRepository;
 
 #[ORM\Entity(repositoryClass: ProjectRepository::class)]
@@ -25,6 +27,14 @@ class Project
     #[ORM\ManyToOne(targetEntity: Teacher::class, inversedBy: 'projects')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Teacher $proposedBy = null;
+
+    #[ORM\ManyToMany(targetEntity: Subject::class, mappedBy: 'projects')]
+    private Collection $subjects;
+
+    public function __construct()
+    {
+        $this->subjects = new ArrayCollection();
+    }
 
     public function getId(): ?int {
         return $this->id;
@@ -65,6 +75,22 @@ class Project
     public function setProposedBy(?Teacher $teacher): self
     {
         $this->proposedBy = $teacher;
+        return $this;
+    }
+
+    public function getSubjects(): Collection {
+        return $this->subjects;
+    }
+
+    public function addSubject(Subject $subject): self {
+        if (!$this->subjects->contains($subject)) {
+            $this->subjects[] = $subject;
+        }
+        return $this;
+    }
+
+    public function removeSubject(Subject $subject): self {
+        $this->subjects->removeElement($subject);
         return $this;
     }
 }

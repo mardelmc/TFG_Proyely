@@ -1,6 +1,7 @@
 <?php
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\StudentRepository;
@@ -29,8 +30,13 @@ class Student
     #[ORM\OneToOne(targetEntity: Project::class, mappedBy: 'student')]
     private ?Project $project = null;
 
-    #[ORM\ManyToMany(targetEntity: Subject::class, inversedBy: 'projects')]
+    #[ORM\ManyToMany(targetEntity: Subject::class, mappedBy: 'students')]
     private Collection $subjects;
+
+    public function __construct()
+    {
+        $this->subjects = new ArrayCollection();
+    }
 
     public function getId(): ?int {
         return $this->id;
@@ -88,12 +94,15 @@ class Student
     public function addSubject(Subject $subject): self {
         if (!$this->subjects->contains($subject)) {
             $this->subjects[] = $subject;
+            $subject->addStudent($this); // Add this line
         }
         return $this;
     }
 
     public function removeSubject(Subject $subject): self {
-        $this->subjects->removeElement($subject);
+        if ($this->subjects->removeElement($subject)) {
+            $subject->removeStudent($this); // Add this line
+        }
         return $this;
     }
 }

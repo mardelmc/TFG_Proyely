@@ -47,9 +47,9 @@ final class StudentFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            'firstName' => self::faker()->text(255),
+            'firstName' => self::faker()->name(),
             'group' => GroupFactory::new(),
-            'lastName' => self::faker()->text(255),
+            'lastName' => self::faker()->lastName(),
         ];
     }
 

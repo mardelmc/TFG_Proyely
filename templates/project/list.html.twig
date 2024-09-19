@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Lista de proyectos{{ parent() }}{% endblock %}
-{% block content %}
+{% block body %}
     <h1>Proyectos</h1>
 
         <a href={{ path('project_new') }}>Crear Nuevo Proyecto</a>
@@ -21,7 +21,7 @@
                     <td>{{ project.description }}</td>
                     <td>{{ project.student}}</td>
 
-                    <td><a href={{ path('project_edit', {'serial': proyect.id})  }}><i class="fa-solid fa-pencil"></i></a></td>
+
                 </tr>
             {% else %}
                 <tr>
@@ -31,3 +31,4 @@
         </tbody>
     </table>
 {% endblock %}
+{#     <td><a href={{ path('project_edit', {'serial': proyect.id})  }}><i class="fa-solid fa-pencil"></i></a></td> #}

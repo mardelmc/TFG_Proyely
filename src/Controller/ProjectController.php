@@ -24,8 +24,37 @@ class ProjectController extends AbstractController
     #[Route('/project/new', name: 'project_new')]
     public function new(
         Request $request,
+        ProjectRepository $projectRepository,
+    ): Response
+    {
+        $project = new Project();
+        $projectRepository->add($project);
+
+        $form = $this->createForm(ProjectType::class, $project);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            try {
+                $this->addFlash('success', 'The project has been registered succesfully');
+                return $this->redirectToRoute('project');
+            }catch (\Exception $e){
+                $this->addFlash('error', 'Register could not be saved');
+            }
+        }
+
+        return $this->render('project/edit.html.twig', [
+            'form' => $form->createView(),
+            'project' => $project
+        ]);
+    }
+
+
+    /*
+    #[Route('/project/new', name: 'project_new')]
+    public function new(
+        Request $request,
         ProjectRepository $projectRepository
-    )
+    ): Response
     {
         $project = new Project();
         $projectRepository->add($project);
@@ -53,7 +82,7 @@ class ProjectController extends AbstractController
             'project' => $project
         ]);
     }
-
+*/
     /*
     #[Route('/magazine/{serial}', name: 'project_edit')]
     public function edit(

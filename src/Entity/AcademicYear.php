@@ -92,7 +92,6 @@ class AcademicYear
 
     public function removeGroup(Group $group): self {
         if ($this->groups->removeElement($group)) {
-            // set the owning side to null (unless already changed)
             if ($group->getAcademicYear() === $this) {
                 $group->setAcademicYear(null);
             }

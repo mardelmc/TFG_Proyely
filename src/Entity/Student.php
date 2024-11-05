@@ -94,14 +94,14 @@ class Student
     public function addSubject(Subject $subject): self {
         if (!$this->subjects->contains($subject)) {
             $this->subjects[] = $subject;
-            $subject->addStudent($this); // Add this line
+            $subject->addStudent($this);
         }
         return $this;
     }
 
     public function removeSubject(Subject $subject): self {
         if ($this->subjects->removeElement($subject)) {
-            $subject->removeStudent($this); // Add this line
+            $subject->removeStudent($this);
         }
         return $this;
     }

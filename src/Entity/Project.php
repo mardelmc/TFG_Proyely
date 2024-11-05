@@ -21,7 +21,7 @@ class Project
     private ?string $description = null;
 
     #[ORM\OneToOne(targetEntity: Student::class, inversedBy: 'project')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Student $student = null;
 
     #[ORM\ManyToOne(targetEntity: Teacher::class, inversedBy: 'projects')]
@@ -29,6 +29,7 @@ class Project
     private ?Teacher $proposedBy = null;
 
     #[ORM\ManyToMany(targetEntity: Subject::class, mappedBy: 'projects')]
+    #[ORM\JoinColumn(nullable: true)]
     private Collection $subjects;
 
     public function __construct()

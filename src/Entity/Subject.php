@@ -95,11 +95,11 @@ class Subject
         return $this;
     }
 
-    public function getStudents(): Collection { // Add this method
+    public function getStudents(): Collection {
         return $this->students;
     }
 
-    public function addStudent(Student $student): self { // Add this method
+    public function addStudent(Student $student): self {
         if (!$this->students->contains($student)) {
             $this->students[] = $student;
             $student->addSubject($this);
@@ -107,7 +107,7 @@ class Subject
         return $this;
     }
 
-    public function removeStudent(Student $student): self { // Add this method
+    public function removeStudent(Student $student): self {
         if ($this->students->removeElement($student)) {
             $student->removeSubject($this);
         }

@@ -103,7 +103,6 @@ class Teacher
     public function removeProject(Project $project): self
     {
         if ($this->projects->removeElement($project)) {
-            // set the owning side to null (unless already changed)
             if ($project->getProposedBy() === $this) {
                 $project->setProposedBy(null);
             }

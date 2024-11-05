@@ -77,7 +77,6 @@ class Group
 
     public function removeStudent(Student $student): self {
         if ($this->students->removeElement($student)) {
-            // set the owning side to null (unless already changed)
             if ($student->getGroup() === $this) {
                 $student->setGroup(null);
             }

@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Project;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Psr\Log\LoggerInterface;
 
 /**
  * @extends ServiceEntityRepository<Project>
@@ -16,8 +17,14 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ProjectRepository extends ServiceEntityRepository
 {
+    public function __construct(ManagerRegistry $registry, LoggerInterface $logger)
+    {
+$this->logger = $logger;
+        parent::__construct($registry, Project::class);
+    }
     public function add(Project $project): void
     {
+$this->logger->info('Saving project', ['project' => $project->getName()]);
         $this->getEntityManager()->persist($project);
     }
     public function save(): void
@@ -28,10 +35,7 @@ class ProjectRepository extends ServiceEntityRepository
     {
         $this->getEntityManager()->remove($project);
     }
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, Project::class);
-    }
+
 
 //    /**
 //     * @return Project[] Returns an array of Project objects
@@ -57,4 +61,14 @@ class ProjectRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function listAll(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->select('p, s, t')
+            ->leftJoin('p.student', 's')
+            ->leftJoin('p.proposedBy', 't')
+            ->getQuery()
+            ->getResult();
+    }
 }

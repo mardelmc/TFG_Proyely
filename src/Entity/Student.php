@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\StudentRepository;
 
 #[ORM\Entity(repositoryClass: StudentRepository::class)]
-class Student
+class Student extends User
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -36,6 +36,7 @@ class Student
     public function __construct()
     {
         $this->subjects = new ArrayCollection();
+        $this->addRole('ROLE_STUDENT');
     }
 
     public function getId(): ?int {

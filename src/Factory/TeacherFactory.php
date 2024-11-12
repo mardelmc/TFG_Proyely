@@ -47,6 +47,8 @@ final class TeacherFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
+            'nickname' => self::faker()->unique()->userName(),
+            'password' => 'plain_password',
             'firstName' => self::faker()->name(),
             'lastName' => self::faker()->lastName(),
             'tutor' => self::faker()->boolean(),

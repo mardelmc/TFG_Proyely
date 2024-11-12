@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TeacherRepository::class)]
-class Teacher
+class Teacher extends User
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -40,6 +40,7 @@ class Teacher
     public function __construct() {
         $this->projects = new ArrayCollection();
         $this->academicYears = new ArrayCollection();
+        $this->addRole('ROLE_TEACHER');
     }
 
 
@@ -81,7 +82,9 @@ class Teacher
     public function setTutor(bool $tutor): static
     {
         $this->tutor = $tutor;
-
+        if ($tutor) {
+            $this->addRole('ROLE_TUTOR');
+        }
         return $this;
     }
 
@@ -144,5 +147,11 @@ class Teacher
     public function __toString(): string
     {
         return $this->firstName . ' ' . $this->lastName;
+    }
+
+    public function promoteToAdmin(): self
+    {
+        $this->addRole('ROLE_ADMIN');
+        return $this;
     }
 }

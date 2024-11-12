@@ -5,17 +5,25 @@ namespace App\Controller;
 use App\Entity\Project;
 use App\Form\ProjectType;
 use App\Repository\ProjectRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+
+use Psr\Log\LoggerInterface;
+
 class ProjectController extends AbstractController
 {
+public function __construct(ManagerRegistry $registry, LoggerInterface $logger)
+{
+    $this->logger = $logger;
+}
     #[Route('/project', name: 'project')]
     final public function list (ProjectRepository $projectRepository): Response
     {
-        $projects = $projectRepository->findAll();
+        $projects = $projectRepository->listAll();
         return $this->render('project/list.html.twig', [
             'projects' => $projects,
         ]);
@@ -29,12 +37,15 @@ class ProjectController extends AbstractController
     {
         $project = new Project();
         $projectRepository->add($project);
-
         $form = $this->createForm(ProjectType::class, $project);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
             try {
+$this->logger->info('Saving project', ['project' => $project->getName()]);
+$this->logger->info('Saving project', ['project' => $project->getStudent()->getId()]);
+$this->logger->info('Saving project', ['project' => $project->getProposedBy()->getId()]);
+                $projectRepository->save();
                 $this->addFlash('success', 'The project has been registered succesfully');
                 return $this->redirectToRoute('project');
             }catch (\Exception $e){
@@ -43,8 +54,7 @@ class ProjectController extends AbstractController
         }
 
         return $this->render('project/edit.html.twig', [
-            'form' => $form->createView(),
-            'project' => $project
+            'form' => $form->createView()
         ]);
     }
 

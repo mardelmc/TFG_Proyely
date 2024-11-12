@@ -16,9 +16,32 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class StudentRepository extends ServiceEntityRepository
 {
+    public function add(Student $student): void
+    {
+        $this->getEntityManager()->persist($student);
+    }
+    public function save(): void
+    {
+        $this->getEntityManager()->flush();
+    }
+    public function remove(Student $student): void
+    {
+        $this->getEntityManager()->remove($student);
+    }
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Student::class);
+    }
+
+    public function findByTeacher(int $teacherId): array
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.teacher = :teacherId')
+            ->setParameter('teacherId', $teacherId)
+            ->orderBy('s.name', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 
 //    /**

@@ -47,6 +47,8 @@ final class StudentFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
+            'nickname' => self::faker()->unique()->userName(),
+            'password' => 'plain_password',
             'firstName' => self::faker()->name(),
             'group' => GroupFactory::new(),
             'lastName' => self::faker()->lastName(),

@@ -1,0 +1,18 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+    <form action="{{ path('security_enter') }}" method="post">
+        <h1>Log In</h1>
+        {% if error %}
+            <h2 class="alert alert-danger">{{ error.message }}</h2>
+        {% endif %}
+        <input type="text" name="_username" placeholder="user" value="{{ last_alias }}" required {% if not error %}autofocus{% endif %}/>
+        <input type="password" name="_password" placeholder="password" required {% if error %}autofocus{% endif %}/>
+        <button type="submit" class="btn btn-primary">Enter</button>
+    </form>
+{% endblock %}
+
+{% block title %}
+    Proyely - Log In
+{% endblock %}
+

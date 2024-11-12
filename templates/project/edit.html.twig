@@ -1,14 +1,12 @@
-{% extends 'base.html.twig' %}
+{% extends 'layout.html.twig' %}
 {% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
-{% block body %}
-    {% if project.id is null %}
-        <h1>Datos del nuevo proyecto </h1>
-    {% else %}
-        <h1>Modificar datos del proyecto</h1>
-    {% endif %}
+{% block content %}
+    <h1>nuevo</h1>
+    <h1>nuevo</h1>
     {{ form_start(form) }}
     {{ form_widget(form) }}
     <button type="submit" class="btn btn-primary">Guardar</button>
+    <a href="{{ path('project') }}" class="btn btn-info">Volver al listado</a>
     {{ form_end(form) }}
 
 {% endblock %}
@@ -16,5 +14,3 @@
 {% block title %}
 
 {% endblock %}
-
-{#  <a href="{{path('project_delete', {'serial': project.serial})  }}">Eliminar</a> #}

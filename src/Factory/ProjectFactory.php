@@ -49,8 +49,8 @@ final class ProjectFactory extends ModelFactory
         return [
             'description' => self::faker()->text(255),
             'name' => self::faker()->text(255),
-            'proposedBy' => TeacherFactory::new(),
-            'student' => StudentFactory::new(),
+            'proposedBy' => TeacherFactory::randomOrCreate(),
+            'student' => StudentFactory::randomOrCreate(),
         ];
     }
 

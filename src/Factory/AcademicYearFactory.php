@@ -44,12 +44,16 @@ final class AcademicYearFactory extends ModelFactory
      *
      * @todo add your default values here
      */
+
+    private static int $currentYear = 2020;
     protected function getDefaults(): array
     {
+        $year = self::$currentYear++;
+
         return [
-            'description' => self::faker()->text(255),
-            'endDate' => self::faker()->dateTime(),
-            'startDate' => self::faker()->dateTime(),
+            'description' => 'Curso ' . $year . '-' . ($year + 1),
+            'startDate' => new \DateTime($year . '-09-15'),
+            'endDate' => new \DateTime(($year + 1) . '-06-30')
         ];
     }
 

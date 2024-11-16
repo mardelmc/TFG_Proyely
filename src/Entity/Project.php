@@ -20,7 +20,7 @@ class Project
     #[ORM\Column(length: 255)]
     private ?string $description = null;
 
-    #[ORM\OneToOne(targetEntity: Student::class, inversedBy: 'project')]
+    #[ORM\OneToOne(inversedBy: 'project', targetEntity: Student::class)]
     #[ORM\JoinColumn(nullable: true)]
     private ?Student $student = null;
 

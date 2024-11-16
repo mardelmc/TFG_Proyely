@@ -2,13 +2,17 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\AcademicYear;
 use App\Entity\Student;
 use App\Entity\Subject;
 use App\Entity\Teacher;
 use App\Entity\User;
+use App\Factory\AcademicYearFactory;
+use App\Factory\GroupFactory;
 use App\Factory\ProjectFactory;
 use App\Factory\StudentFactory;
 use App\Factory\SubjectFactory;
+use App\Factory\TeacherFactory;
 use App\Factory\UserFactory;
 use App\Repository\TeacherRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -26,11 +30,8 @@ class AppFixtures extends Fixture
     }
     public function load(ObjectManager $manager): void
     {
-        // $product = new Product();
-        // $manager->persist($product);
-        SubjectFactory::createMany(5);
-        ProjectFactory::createMany(20);
-        StudentFactory::createMany(20);
+        $academicYears = AcademicYearFactory::createMany(4);
+
         $teacher = new Teacher();
         $teacher->setNickname('uwu');
         $teacher->setFirstName('Maria');
@@ -39,10 +40,33 @@ class AppFixtures extends Fixture
         $teacher->setPassword(
             $this->passwordHasher->hashPassword($teacher, '1234')
         );
-
         $teacher->setRoles(['ROLE_TEACHER', 'ROLE_ADMIN']);
-
         $this->teacherRepository->add($teacher, true);
+
+        $subjects = SubjectFactory::createMany(5);
+
+        $allStudents = [];
+        foreach ($academicYears as $academicYear) {
+            $groups = GroupFactory::createMany(2, [
+                'academicYear' => $academicYear,
+                'tutor' => TeacherFactory::new()
+            ]);
+
+            foreach ($groups as $group) {
+                $students = StudentFactory::createMany(5, [
+                    'group' => $group,
+                ]);
+                $allStudents = array_merge($allStudents, $students);
+            }
+        }
+
+
+        foreach ($allStudents as $index => $student) {
+            ProjectFactory::createOne([
+                'student' => $student,
+                'proposedBy' => $teacher,
+            ]);
+        }
 
         $manager->flush();
     }

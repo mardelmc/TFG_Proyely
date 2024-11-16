@@ -21,15 +21,15 @@ class Group
     #[ORM\Column(length: 255)]
     private ?string $description = null;
 
-    #[ORM\OneToMany(targetEntity: Student::class, mappedBy: 'group')]
+    #[ORM\OneToMany(mappedBy: 'group', targetEntity: Student::class)]
     private Collection $students;
 
     #[ORM\ManyToMany(targetEntity: Subject::class, inversedBy: 'groups')]
     #[ORM\JoinTable(name: 'group_subject')]
     private Collection $subjects;
 
-    #[ORM\OneToOne(targetEntity: Teacher::class, inversedBy: 'tutoredGroup')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\OneToOne(inversedBy: 'tutoredGroup', targetEntity: Teacher::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: "SET NULL")]
     private ?Teacher $tutor = null;
 
     #[ORM\ManyToOne(targetEntity: AcademicYear::class, inversedBy: 'groups')]

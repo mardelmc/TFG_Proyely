@@ -20,7 +20,7 @@ public function __construct(ManagerRegistry $registry, LoggerInterface $logger)
 {
     $this->logger = $logger;
 }
-    #[Route('/project', name: 'project')]
+    #[Route('/project', name: 'project_list')]
     final public function list (ProjectRepository $projectRepository): Response
     {
         $projects = $projectRepository->listAll();
@@ -43,7 +43,7 @@ public function __construct(ManagerRegistry $registry, LoggerInterface $logger)
         if($form->isSubmitted() && $form->isValid()){
             try {
 $this->logger->info('Saving project', ['project' => $project->getName()]);
-$this->logger->info('Saving project', ['project' => $project->getStudent()->getId()]);
+//$this->logger->info('Saving project', ['project' => $project->getStudent()->getId()]);
 $this->logger->info('Saving project', ['project' => $project->getProposedBy()->getId()]);
                 $projectRepository->save();
                 $this->addFlash('success', 'The project has been registered succesfully');
@@ -57,7 +57,56 @@ $this->logger->info('Saving project', ['project' => $project->getProposedBy()->g
             'form' => $form->createView()
         ]);
     }
+    #[Route('/project/delete/{id}', name: 'project_delete')]
+    public function delete(
+        Request $request,
+        ProjectRepository $projectRepository,
+        Project $project ): Response
+    {
+        if ($request->request->has('confirmar')) {
+            try {
+                $projectRepository->remove($project);
+                $projectRepository->save();
+                $this->addFlash('success', 'Proyecto eliminado con éxito');
+                return $this->redirectToRoute('project_list');
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'No se ha podido eliminar el proyecto');
+            }
+        }
+        return $this->render('project/delete.html.twig', [
+            'project' => $project
+        ]);
+    }
+    /*
+    #[Route('/project/{serial}', name: 'project_edit')]
+    public function edit(
+        Request $request,
+        ProjectRepository $projectRepository,
+        Project $project ): Response
+    {
+        $form = $this->createForm(ProjectType::class, $project);
+        $form->handleRequest($request);
 
+        $nuevo = $project->getId() === null;
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $projectRepository->save();
+                if ($nuevo) {
+                    $this->addFlash('success', 'Proyecto creado con éxito');
+                } else {
+                    $this->addFlash('success', 'Cambios guardados con éxito');
+                }
+                return $this->redirectToRoute('magazine_list');
+            }catch (\Exception $e) {
+                $this->addFlash('error', 'No se han podido guardar los cambios');
+            }
+        }
+        return $this->render('magazine/modificar.html.twig', [
+            'form' => $form->createView(),
+            'magazine' => $magazine
+        ]);
+    }*/
 
     /*
     #[Route('/project/new', name: 'project_new')]

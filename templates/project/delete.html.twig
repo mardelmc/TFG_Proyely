@@ -1,13 +1,13 @@
 {% extends 'layout.html.twig' %}
 
 {% block content %}
-    <h1>Eliminar revista</h1>
+    <h1>Eliminar proyecto</h1>
     <div class="alert alert-danger">
-        La revista {{ magazine.serial }} será eliminado de la aplicación.
+        El proyecto {{ project.name }} será eliminado de la aplicación.
         La operación no se puede deshacer.
     </div>
     <form method="post">
-        <a href="{{ path('magazine_list') }}" class="btn btn-info">Volver al listado</a>
+        <a href="{{ path('project_list') }}" class="btn btn-info">Volver al listado</a>
         <button type="submit" name="confirmar" class="btn btn-danger">Confirmar
             eliminación</button>
     </form>

@@ -6,7 +6,7 @@
         <div class="d-flex align-items-center">
             <div class="ms-3 d-flex align-items-center">
                 <i class="fa-solid fa-user-circle fa-2x text-white"></i>
-                <span class="text-white ms-2">{{ app.user }} a </span>
+                <span class="text-white ms-2">  {{ app.user ? app.user : 'Not Found' }}</span>
             </div>
             <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">
                 <span class="navbar-toggler-icon"></span>
@@ -28,7 +28,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('project') }}">
+                        <a class="nav-link" href="{{ path('project_list') }}">
                             <i class="fa-solid fa-clipboard"></i> Projects
                         </a>
                     </li>

@@ -20,9 +20,19 @@ security:
             form_login:
                 login_path: security_signin
                 check_path: security_signin
+                username_parameter: _username
+                password_parameter: _password
+
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800 # 1 week
+                path: /
+                always_remember_me: true
+
             logout:
                 path: security_signout
                 target: security_signin
+
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall

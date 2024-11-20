@@ -4,6 +4,7 @@ namespace App\Factory;
 
 use App\Entity\Student;
 use App\Repository\StudentRepository;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
@@ -34,9 +35,10 @@ final class StudentFactory extends ModelFactory
      *
      * @todo inject services if required
      */
-    public function __construct()
+    public function __construct(UserPasswordHasherInterface $passwordHasher)
     {
         parent::__construct();
+        $this->passwordHasher = $passwordHasher;
     }
 
     /**
@@ -46,9 +48,13 @@ final class StudentFactory extends ModelFactory
      */
     protected function getDefaults(): array
     {
+
+        $student = new Student();
+        $hashedPassword = $this->passwordHasher->hashPassword($student, '1234');
+
         return [
             'nickname' => self::faker()->unique()->userName(),
-            'password' => 'plain_password',
+            'password' => $hashedPassword,
             'firstName' => self::faker()->name(),
             'group' => GroupFactory::new(),
             'lastName' => self::faker()->lastName(),

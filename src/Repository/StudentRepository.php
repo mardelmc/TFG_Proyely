@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Student;
+use App\Entity\Teacher;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -34,12 +35,12 @@ class StudentRepository extends ServiceEntityRepository
         parent::__construct($registry, Student::class);
     }
 
-    public function findByTeacher(int $teacherId): array
+    public function findByTutor($tutor): array
     {
         return $this->createQueryBuilder('s')
-            ->andWhere('s.teacher = :teacherId')
-            ->setParameter('teacherId', $teacherId)
-            ->orderBy('s.name', 'ASC')
+            ->innerJoin('s.group', 'g')
+            ->where('g.tutor = :tutorId')
+            ->setParameter('tutorId', $tutor)
             ->getQuery()
             ->getResult();
     }

@@ -1,14 +1,14 @@
 {% extends 'layout.html.twig' %}
 {% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
 {% block content %}
-    <h1>nuevo</h1>
-    <h1>nuevo</h1>
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button type="submit" class="btn btn-primary">Guardar</button>
-    <a href="{{ path('project') }}" class="btn btn-info">Volver al listado</a>
-    {{ form_end(form) }}
-
+    <div class="container">
+        <h1>Nuevo proyecto</h1>
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a href="{{ path('project_list') }}" class="btn btn-info">Volver al listado</a>
+        {{ form_end(form) }}
+    </div>
 {% endblock %}
 
 {% block title %}

@@ -6,9 +6,9 @@
     <h1 class="text-center mb-4">Menú Principal</h1>
     <div class="row row-cols-1 row-cols-md-3 g-4">
 
-        <!-- Tutoria -->
+        <!-- Tutoria, vision tutor-->
         <div class="col">
-            <a href="#" class="text-decoration-none text-dark">
+            <a href="{{path('listStudents')}}" class="text-decoration-none text-dark">
                 <div class="card text-center shadow-sm">
                     <div class="card-body">
                         <i class="fas fa-chalkboard-teacher fa-3x mb-3"></i>
@@ -18,7 +18,7 @@
             </a>
         </div>
 
-        <!-- Lista de prioridad -->
+        <!-- Lista de prioridad, vision estudiante -->
         <div class="col">
             <a href="#" class="text-decoration-none text-dark">
                 <div class="card text-center shadow-sm">
@@ -32,7 +32,7 @@
 
         <!-- Lista de proyectos -->
         <div class="col">
-            <a href="#" class="text-decoration-none text-dark">
+            <a href="{{path('project_list')}}" class="text-decoration-none text-dark">
                 <div class="card text-center shadow-sm">
                     <div class="card-body">
                         <i class="fas fa-project-diagram fa-3x mb-3"></i>
@@ -42,7 +42,7 @@
             </a>
         </div>
 
-        <!-- Lista de proyectos (docente view) -->
+        <!-- Lista de proyectos -->
         <div class="col">
             <a href="#" class="text-decoration-none text-dark">
                 <div class="card text-center shadow-sm">

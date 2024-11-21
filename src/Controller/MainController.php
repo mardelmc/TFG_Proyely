@@ -9,10 +9,16 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class MainController extends AbstractController
 {
-    #[Route('/', name: 'main')]
+    #[Route('/info', name: 'info')]
     final public function index(): Response
     {
         return $this->render('main/index.html.twig');
+    }
+
+    #[Route('/', name: 'menu')]
+    final public function menu (): Response
+    {
+        return $this->render('main/menu.html.twig');
     }
 
     #[Route(path: '/signin', name: 'security_signin')]

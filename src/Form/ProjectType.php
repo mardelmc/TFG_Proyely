@@ -39,7 +39,7 @@ class ProjectType extends AbstractType
         } else {
             $builder->add('proposedBy', EntityType::class, [
                 'class' => Teacher::class,
-                'placeholder' => 'Seleccione un profesor',
+                'placeholder' => 'Seleccione un profesor'
             ]);
         }
     }

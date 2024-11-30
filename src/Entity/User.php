@@ -6,12 +6,13 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Serializable;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\InheritanceType('JOINED')]
 #[ORM\DiscriminatorColumn(name: 'user_type', type: 'string')]
 #[ORM\DiscriminatorMap(['teacher' => Teacher::class, 'student' => Student::class])]
-abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
+abstract class User implements UserInterface, PasswordAuthenticatedUserInterface, Serializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -96,5 +97,25 @@ abstract class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function eraseCredentials(): void
     {
 
+    }
+
+    public function serialize(): string
+    {
+        return serialize([
+            $this->id,
+            $this->nickname,
+            $this->password,
+            $this->roles,
+        ]);
+    }
+
+    public function unserialize($serialized): void
+    {
+        [
+            $this->id,
+            $this->nickname,
+            $this->password,
+            $this->roles,
+        ] = unserialize($serialized, ['allowed_classes' => false]);
     }
 }

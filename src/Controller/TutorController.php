@@ -10,18 +10,14 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TutorController extends AbstractController
 {
-
-    #[Route('/listStudents', name: 'listStudents')]
+    #[Route('/listStudentsBy', name: 'listStudentsBy')]
     final public function list (StudentRepository $studentRepository): Response
     {
         $user = $this->getUser();
-     /*   if (!$user || !in_array('ROLE_TUTOR', $user->getRoles())) {
-            throw $this->createAccessDeniedException('No tienes acceso a esta página.');
-        }*/
 
         $students = $studentRepository->findByTutor($user);
 
-        return $this->render('tutor/studentsList.html.twig', [
+        return $this->render('user/studentsList.html.twig', [
             'students' => $students,
         ]);
     }

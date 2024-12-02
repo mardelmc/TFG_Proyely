@@ -71,4 +71,24 @@ $this->logger->info('Saving project', ['project' => $project->getName()]);
             ->getQuery()
             ->getResult();
     }
+
+    public function findByFilters(?string $student, ?string $proposedBy): array
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->select('p, s, t')
+            ->leftJoin('p.student', 's')
+            ->leftJoin('p.proposedBy', 't');
+
+        if ($student) {
+            $qb->andWhere('s.name LIKE :student')
+                ->setParameter('student', '%' . $student . '%');
+        }
+
+        if ($proposedBy) {
+            $qb->andWhere('t.name LIKE :proposedBy')
+                ->setParameter('proposedBy', '%' . $proposedBy . '%');
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }

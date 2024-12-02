@@ -1,38 +1,124 @@
 {% extends 'layout.html.twig' %}
-
 {% block title %}Lista de proyectos{{ parent() }}{% endblock %}
 {% block content %}
 
     <h1>Proyectos</h1>
 
-        <a href={{ path('project_new') }}>Crear Nuevo Proyecto</a>
+    <form method="get" id="filterForm">
+        <div class="form-group">
+            <label for="group">Filtrar por Grupo:</label>
+            <select id="group" name="group" class="form-control">
+                <option value="" {% if selectedGroup is empty %}selected{% endif %}>Todos los Grupos</option>
+                {% for group in groups %}
+                    <option value="{{ group.id }}" {% if selectedGroup == group.id %}selected{% endif %}>
+                        {{ group.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
 
-    <table class="table table-bordered table-hover table-stripped">
+        <div class="form-group">
+            <label for="student">Buscar por Estudiante:</label>
+            <input type="text" id="student" name="student" class="form-control" value="{{ selectedStudent ? selectedStudent : '' }}" placeholder="Nombre del estudiante" list="studentList">
+            <datalist id="studentList">
+                {% for student in students %}
+                    <option value="{{ student.firstName }} {{ student.lastName }}"></option>
+                {% endfor %}
+            </datalist>
+        </div>
+
+        <button type="button" class="btn btn-primary mt-3" onclick="submitFilterForm()">Buscar</button>
+    </form>
+
+    <div style="text-align: right">
+        <a href="{{ path('newProject') }}" class="btn btn-success">Crear Nuevo Proyecto</a>
+    </div>
+
+    <table class="table table-bordered table-hover table-stripped mt-4">
         <thead>
         <tr>
             <th>Nombre</th>
             <th>Descripcion</th>
             <th>Asignado a</th>
+            <th>Propuesto por</th>
             <th></th>
             <th></th>
         </tr>
         </thead>
         <tbody>
-            {% for project in projects %}
-                <tr>
-                    <td>{{ project.name }}</td>
-                    <td>{{ project.description }}</td>
-                    <td>{{ project.student}}</td>
-                    <th><a href=""><i class="fa-solid fa-pencil"></i></a></th>
-                    <th><a href="{{ path('project_delete', {'id': project.id }) }}"><i class="fa-solid fa-trash-can"></i></a></th>
-
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="3">No hay proyectos</td>
-                </tr>
-            {% endfor %}
+        {% for project in pagination.items %}
+            <tr>
+                <td>{{ project.name }}</td>
+                <td>{{ project.description }}</td>
+                <td>{{ project.student ? project.student.firstName : 'Sin asignar' }}</td>
+                <td>{{ project.proposedBy }}</td>
+                <th><a href="{{ path('modifyProject', {'id': project.id}) }}" class="btn btn-info btn-sm"><i class="fa-solid fa-pencil"></i> Editar</a></th>
+                <th><a href="{{ path('deleteProject', {'id': project.id }) }}" class="btn btn-danger btn-sm"><i class="fa-solid fa-trash-can"></i> Eliminar</a></th>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">No hay proyectos</td>
+            </tr>
+        {% endfor %}
         </tbody>
     </table>
+
+    <nav class="pagination is-centered mt-4" role="navigation" aria-label="pagination">
+        <ul class="pagination justify-content-center">
+            {% if pagination.currentPageNumber > 1 %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ path('listProject', app.request.query.all|merge({'page': pagination.currentPageNumber - 1})) }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo; Anterior</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">&laquo; Anterior</span>
+                </li>
+            {% endif %}
+
+            {% for page in 1..pagination.pageCount %}
+                {% if page == pagination.currentPageNumber %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ page }}</span>
+                    </li>
+                {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ path('listProject', app.request.query.all|merge({'page': page})) }}">{{ page }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if pagination.currentPageNumber < pagination.pageCount %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ path('listProject', app.request.query.all|merge({'page': pagination.currentPageNumber + 1})) }}" aria-label="Next">
+                        <span aria-hidden="true">Siguiente &raquo;</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">Siguiente &raquo;</span>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <script>
+        function submitFilterForm() {
+            const form = document.getElementById('filterForm');
+            const studentInput = document.getElementById('student');
+            const groupSelect = document.getElementById('group');
+
+            if (studentInput.value === '') {
+                studentInput.name = '';
+            }
+            if (groupSelect.value === '') {
+                groupSelect.name = '';
+            }
+
+            form.submit();
+        }
+    </script>
+
 {% endblock %}
-{#     <td><a href={{ path('project_edit', {'serial': proyect.id})  }}><i class="fa-solid fa-pencil"></i></a></td> #}
+

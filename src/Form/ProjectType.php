@@ -30,18 +30,19 @@ class ProjectType extends AbstractType
             ->add('description');
 
 
-        if ($user && in_array('ROLE_TEACHER', $user->getRoles())) {
+        if ($user && in_array('ROLE_ADMIN', $user->getRoles())) {
             $builder->add('proposedBy', EntityType::class, [
                 'class' => Teacher::class,
-                'data' => $user,
-                'disabled' => true,
+                'placeholder' => 'Seleccione un profesor',
             ]);
         } else {
             $builder->add('proposedBy', EntityType::class, [
                 'class' => Teacher::class,
-                'placeholder' => 'Seleccione un profesor'
+                'data' => $user,
+                'attr' => ['readonly' => true],
             ]);
         }
+
     }
 
     public function configureOptions(OptionsResolver $resolver): void

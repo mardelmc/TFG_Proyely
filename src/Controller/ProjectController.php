@@ -80,12 +80,12 @@ public function __construct(ManagerRegistry $registry, LoggerInterface $logger)
         $projectRepository->add($project);
         $form = $this->createForm(ProjectType::class, $project);
         $form->handleRequest($request);
-
         if($form->isSubmitted() && $form->isValid()){
             try {
-//$this->logger->info('Saving project', ['project' => $project->getName()]);
+$this->logger->info('project proposed', ['project' => $project->getProposedBy()]);
+$this->logger->info('project name', ['project' => $project->getName()]);
 //$this->logger->info('Saving project', ['project' => $project->getStudent()->getId()]);
-//$this->logger->info('Saving project', ['project' => $project->getProposedBy()->getId()]);
+$this->logger->info('Saving project', ['project' => $project->getProposedBy()->getId()]);
                 $projectRepository->save();
                 $this->addFlash('success', 'The project has been registered succesfully');
                 return $this->redirectToRoute('listProject');

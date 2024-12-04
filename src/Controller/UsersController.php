@@ -4,8 +4,15 @@ namespace App\Controller;
 
 use App\Entity\Student;
 use App\Entity\Teacher;
+use App\Form\StudentType;
+use App\Form\TeacherType;
+use App\Repository\AcademicYearRepository;
+use App\Repository\GroupRepository;
 use App\Repository\StudentRepository;
 use App\Repository\TeacherRepository;
+use Doctrine\Persistence\ManagerRegistry;
+use Knp\Component\Pager\PaginatorInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,12 +20,19 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class UsersController extends AbstractController
 {
-
+    public function __construct(ManagerRegistry $registry, LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
     //Students
     #[Route('/listStudents', name: 'listStudents')]
-    final public function listStudents (StudentRepository $studentRepository): Response
+    final public function listStudents (
+        StudentRepository $studentRepository,
+        AcademicYearRepository $academicYearRepository,
+    ): Response
     {
         $students = $studentRepository->findAll();
+        $academicYear = $academicYearRepository->findAll();
 
         return $this->render('user/studentsList.html.twig', [
             'students' => $students,
@@ -66,7 +80,7 @@ class UsersController extends AbstractController
             }
         }
 
-        return $this->render('users/studentDelete.html.twig', [
+        return $this->render('user/studentDelete.html.twig', [
             'user' => $student
         ]);
     }
@@ -74,15 +88,62 @@ class UsersController extends AbstractController
 
     //Teachers
     #[Route('/listTeachers', name: 'listTeachers')]
-    final public function listTeachers (TeacherRepository $teacherRepository): Response
-    {
-        $teachers = $teacherRepository->findAll();
+    final public function listTeachers(
+        Request $request,
+        TeacherRepository $teacherRepository,
+        GroupRepository $groupRepository,
+        AcademicYearRepository $academicYearRepository,
+        PaginatorInterface $paginator
+    ): Response {
+        $selectedAcademicYear = $request->query->get('academicYear');
+        $selectedTeacher = $request->query->get('teacherName');
+        $selectedGroup = $request->query->get('group');
+
+        $teachersQuery = $teacherRepository->findTeachersWithFilters($selectedAcademicYear, $selectedTeacher, $selectedGroup);
+
+        $allTeachers = $teacherRepository->findAll();
+
+        $pagination = $paginator->paginate(
+            $teachersQuery,
+            $request->query->getInt('page', 1),
+            10
+        );
 
         return $this->render('user/teachersList.html.twig', [
-            'teachers' => $teachers,
+            'pagination' => $pagination,
+            'selectedAcademicYear' => $selectedAcademicYear,
+            'selectedTeacher' => $selectedTeacher,
+            'selectedGroup' => $selectedGroup,
+            'academicYears' => $academicYearRepository->findAll(),
+            'groups' => $groupRepository->findAll(),
+            'teachers' => $allTeachers,
         ]);
     }
 
+    #[Route('/listTeachers/new', name: 'newTeacher')]
+    public function new(
+        Request $request,
+        TeacherRepository $teacherRepository,
+    ): Response
+    {
+        $teacher = new Teacher();
+        $teacherRepository->add($teacher);
+        $form = $this->createForm(TeacherType::class, $teacher);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()){
+            try {
+                $teacherRepository->save();
+                $this->addFlash('success', 'El docente ha sido añadido.');
+                return $this->redirectToRoute('teacherModify');
+            }catch (\Exception $e){
+                $this->addFlash('error', 'El docente no se ha guardado. Error: ' . $e->getMessage());
+            }
+        }
+
+        return $this->render('project/edit.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
     #[Route('/listTeachers/modify/{id}', name: 'modifyTeacher')]
     final public function modifyTeacher (
         Request $request,

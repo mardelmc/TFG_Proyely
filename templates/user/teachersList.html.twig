@@ -1,6 +1,156 @@
 {% extends 'layout.html.twig' %}
-
+{% block title %}Lista de Profesores{{ parent() }}{% endblock %}
 {% block content %}
 
-{% endblock %}
+    <h1>Profesores</h1>
 
+    <form method="get" id="filterForm">
+        <div class="form-group">
+            <label for="academicYear">Filtrar por Año Académico:</label>
+            <select id="academicYear" name="academicYear" class="form-control">
+                <option value="" {% if selectedAcademicYear is empty %}selected{% endif %}>Todos los Años</option>
+                {% for year in academicYears %}
+                    <option value="{{ year.id }}" {% if selectedAcademicYear == year.id %}selected{% endif %}>
+                        {{ year.description }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="teacherName">Buscar por Nombre:</label>
+            <input type="text" id="teacherName" name="teacherName" class="form-control" value="{{ selectedTeacher ? selectedTeacher : '' }}" placeholder="Nombre del profesor" list="teacherList">
+            <datalist id="teacherList">
+                {% for teacher in teachers %}
+                    <option value="{{ teacher.firstName }} {{ teacher.lastName }}"></option>
+                {% endfor %}
+            </datalist>
+        </div>
+
+        <button type="button" class="btn btn-primary mt-3" onclick="submitFilterForm()">Buscar</button>
+    </form>
+
+    <div style="text-align: right">
+        <a href="{{ path('newTeacher') }}" class="btn btn-success">Añadir Nuevo Profesor</a>
+    </div>
+
+    <table class="table table-bordered table-hover table-stripped mt-4">
+        <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Tutor</th>
+            <th>Grupo</th>
+            <th>Año Académico Asociado</th>
+            <th>Usuario</th>
+            <th>Roles</th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for teacher in pagination.items %}
+            {% if teacher is not null %}
+            <tr>
+                <td>{{ teacher.firstName }}</td>
+                <td>{{ teacher.lastName }}</td>
+                <td>{{ teacher.tutor ? 'Sí' : 'No' }}</td>
+                <td>
+                    {% if teacher.groups|length > 0 %}
+                        {% for group in teacher.groups %}
+                            {{ group.name }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        Sin grupo
+                    {% endif %}
+                </td>
+
+                <td>
+                    {% if teacher.academicYears|length > 0 %}
+                        {% for year in teacher.academicYears %}
+                            {{ year.description }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        Sin año académico
+                    {% endif %}
+                </td>
+                <td>{{ teacher.nickname }}</td>
+                <td>
+                    {% if teacher.roles|length > 0 %}
+                        {% for rol in teacher.roles %}
+                            {{ rol }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        Sin roles
+                    {% endif %}
+                </td>
+                <td><a href="{# path('modifyTeacher', {'id': teacher.id}) #}" class="btn btn-info btn-sm">Editar</a></td>
+                <td><a href="{# path('deleteTeacher', {'id': teacher.id}) #}" class="btn btn-danger btn-sm">Eliminar</a></td>
+            </tr>
+            {% endif %}
+        {% else %}
+            <tr>
+                <td colspan="7">No hay profesores que coincidan con los filtros.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <nav class="pagination is-centered mt-4" role="navigation" aria-label="pagination">
+        <ul class="pagination justify-content-center">
+            {% if pagination.currentPageNumber > 1 %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ path('listTeachers', app.request.query.all|merge({'page': pagination.currentPageNumber - 1})) }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo; Anterior</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">&laquo; Anterior</span>
+                </li>
+            {% endif %}
+
+            {% for page in 1..pagination.pageCount %}
+                {% if page == pagination.currentPageNumber %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ page }}</span>
+                    </li>
+                {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ path('listTeachers', app.request.query.all|merge({'page': page})) }}">{{ page }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if pagination.currentPageNumber < pagination.pageCount %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ path('listTeachers', app.request.query.all|merge({'page': pagination.currentPageNumber + 1})) }}" aria-label="Next">
+                        <span aria-hidden="true">Siguiente &raquo;</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">Siguiente &raquo;</span>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <script>
+        function submitFilterForm() {
+            const form = document.getElementById('filterForm');
+            const teacherInput = document.getElementById('teacherName');
+            const yearSelect = document.getElementById('academicYear');
+
+            if (teacherInput.value === '') {
+                teacherInput.name = '';
+            }
+            if (yearSelect.value === '') {
+                yearSelect.name = '';
+            }
+
+            form.submit();
+        }
+    </script>
+
+{% endblock %}

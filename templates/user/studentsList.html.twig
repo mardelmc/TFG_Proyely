@@ -1,15 +1,20 @@
 {% extends 'layout.html.twig' %}
 
 {% block content %}
-    <h1>Estudiantes del grupo</h1>
+    <h1>Estudiantes</h1>
 
     <table class="table table-bordered table-hover table-stripped">
         <thead>
         <tr>
             <th>Nombre</th>
             <th>Apellidos</th>
+            <th>Grupo</th>
             <th>Nota</th>
             <th>Proyecto</th>
+            <th>Usuario</th>
+            <th>Roles</th>
+            <th></th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -19,7 +24,11 @@
                 <td>{{ student.lastName }}</td>
                 <td>{{ student.mark ? null : "No Asignada"}}</td>
                 <td>{{ student.mark ? null : "No Asignado"}}</td>
-                <th><a href=""><i class="fa-solid fa-pencil"></i></a></th>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><a href="{# path('modifyStudent', {'id': student.id}) #}" class="btn btn-info btn-sm">Editar</a></td>
+                <td><a href="{# path('deleteStudent', {'id': student.id}) #}" class="btn btn-danger btn-sm">Eliminar</a></td>
 
             </tr>
         {% else %}

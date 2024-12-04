@@ -6,8 +6,10 @@ use App\Repository\TeacherRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Validators\UniqueTutorPerAcademicYear;
 
 #[ORM\Entity(repositoryClass: TeacherRepository::class)]
+
 class Teacher extends User
 {
     #[ORM\Id]
@@ -27,23 +29,38 @@ class Teacher extends User
     #[ORM\OneToMany(mappedBy: 'proposedBy', targetEntity: Project::class)]
     private Collection $projects;
 
-
-    #[ORM\OneToOne(mappedBy: 'tutor', targetEntity: Group::class)]
-    private ?Group $tutoredGroup = null;
-
+    #[ORM\ManyToMany(targetEntity: Group::class, mappedBy: 'tutors')]
+    private Collection $groups;
 
     #[ORM\ManyToMany(targetEntity: AcademicYear::class, inversedBy: 'teachers')]
     #[ORM\JoinTable(name: 'teacher_academic_year')]
     private Collection $academicYears;
 
-
     public function __construct() {
         $this->projects = new ArrayCollection();
         $this->academicYears = new ArrayCollection();
+        $this->groups = new ArrayCollection();
         $this->addRole('ROLE_TEACHER');
     }
 
+    public function getGroups(): Collection {
+        return $this->groups;
+    }
 
+    public function addGroup(Group $group): self {
+        if (!$this->groups->contains($group)) {
+            $this->groups->add($group);
+            $group->addTutor($this);
+        }
+        return $this;
+    }
+
+    public function removeGroup(Group $group): self {
+        if ($this->groups->removeElement($group)) {
+            $group->removeTutor($this);
+        }
+        return $this;
+    }
 
     public function getId(): ?int
     {
@@ -114,12 +131,12 @@ class Teacher extends User
         return $this;
     }
 
-    public function getTutoredGroup(): ?Group
+    public function getTutoredGroup(): Collection
     {
         return $this->tutoredGroup;
     }
 
-    public function setTutoredGroup(?Group $group): self
+    public function setTutoredGroup(Collection $group): self
     {
         $this->tutoredGroup = $group;
 

@@ -28,9 +28,9 @@ class Group
     #[ORM\JoinTable(name: 'group_subject')]
     private Collection $subjects;
 
-    #[ORM\OneToOne(inversedBy: 'tutoredGroup', targetEntity: Teacher::class)]
-    #[ORM\JoinColumn(nullable: true, onDelete: "SET NULL")]
-    private ?Teacher $tutor = null;
+    #[ORM\ManyToMany(targetEntity: Teacher::class, inversedBy: 'groups')]
+    #[ORM\JoinTable(name: 'group_teacher')]
+    private Collection $tutors;
 
     #[ORM\ManyToOne(targetEntity: AcademicYear::class, inversedBy: 'groups')]
     #[ORM\JoinColumn(nullable: false)]
@@ -39,6 +39,26 @@ class Group
     public function __construct() {
         $this->subjects = new ArrayCollection();
         $this->students = new ArrayCollection();
+        $this->tutors = new ArrayCollection();
+    }
+
+    public function getTutors(): Collection {
+        return $this->tutors;
+    }
+
+    public function addTutor(Teacher $teacher): self {
+        if (!$this->tutors->contains($teacher)) {
+            $this->tutors->add($teacher);
+            $teacher->addGroup($this);
+        }
+        return $this;
+    }
+
+    public function removeTutor(Teacher $teacher): self {
+        if ($this->tutors->removeElement($teacher)) {
+            $teacher->removeGroup($this);
+        }
+        return $this;
     }
 
     public function getId(): ?int {
@@ -100,18 +120,6 @@ class Group
         if ($this->subjects->removeElement($subject)) {
             $subject->removeGroup($this);
         }
-        return $this;
-    }
-
-    public function getTutor(): ?Teacher
-    {
-        return $this->tutor;
-    }
-
-    public function setTutor(?Teacher $teacher): self
-    {
-        $this->tutor = $teacher;
-
         return $this;
     }
 

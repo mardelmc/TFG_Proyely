@@ -46,13 +46,20 @@ class AppFixtures extends Fixture
         $subjects = SubjectFactory::createMany(5);
 
         $allStudents = [];
+
         foreach ($academicYears as $academicYear) {
             $groups = GroupFactory::createMany(2, [
                 'academicYear' => $academicYear,
-                'tutor' => TeacherFactory::new()
             ]);
 
             foreach ($groups as $group) {
+                $tutors = TeacherFactory::createMany(1, [
+                    'tutor' => true,
+                ]);
+                foreach ($tutors as $tutor) {
+                    $group->addTutor($tutor->object());
+                }
+
                 $students = StudentFactory::createMany(5, [
                     'group' => $group,
                 ]);

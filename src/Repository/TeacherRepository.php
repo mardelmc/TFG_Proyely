@@ -34,6 +34,30 @@ class TeacherRepository extends ServiceEntityRepository
         $this->getEntityManager()->remove($teacher);
     }
 
+    public function findTeachersWithFilters(?string $academicYear, ?string $teacherName, ?int $groupId): \Doctrine\ORM\Query
+    {
+        $queryBuilder = $this->createQueryBuilder('t')
+            ->leftJoin('t.academicYears', 'ay')
+            ->leftJoin('t.groups', 'g');
+
+        if ($academicYear) {
+            $queryBuilder->andWhere('ay.id = :academicYear')
+                ->setParameter('academicYear', $academicYear);
+        }
+
+        if ($teacherName) {
+            $queryBuilder->andWhere('CONCAT(t.firstName, \' \', t.lastName) LIKE :teacherName')
+                ->setParameter('teacherName', '%' . $teacherName . '%');
+        }
+
+        if ($groupId) {
+            $queryBuilder->andWhere('g.id = :groupId')
+                ->setParameter('groupId', $groupId);
+        }
+
+        return $queryBuilder->getQuery();
+    }
+
 //    /**
 //     * @return Teacher[] Returns an array of Teacher objects
 //     */

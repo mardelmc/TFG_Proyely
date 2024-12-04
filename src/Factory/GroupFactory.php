@@ -46,11 +46,27 @@ final class GroupFactory extends ModelFactory
      */
     protected function getDefaults(): array
     {
+        $gradosSuperiores = [
+            'Desarrollo de Aplicaciones Multiplataforma',
+            'Desarrollo de Aplicaciones Web',
+            'Administración de Sistemas Informáticos en Red',
+            'Gestión de Ventas y Espacios Comerciales',
+            'Laboratorio de Análisis y de Control de Calidad',
+            'Marketing y Publicidad',
+            'Automatización y Robótica Industrial',
+            'Integración Social',
+            'Educación Infantil',
+            'Animaciones 3D, Juegos y Entornos Interactivos',
+        ];
+
         return [
             'academicYear' => AcademicYearFactory::new(),
             'description' => self::faker()->text(255),
-            'name' => self::faker()->text(255),
-            'tutor' => TeacherFactory::new(),
+            'name' => sprintf(
+                '%sº F.P.G.S. (%s)',
+                self::faker()->numberBetween(1, 2),
+                self::faker()->randomElement($gradosSuperiores)
+            ),
         ];
     }
 
@@ -59,9 +75,13 @@ final class GroupFactory extends ModelFactory
      */
     protected function initialize(): self
     {
-        return $this
-            // ->afterInstantiate(function(Group $group): void {})
-        ;
+        return $this->afterInstantiate(function (Group $group): void {
+            // Asignar tutores al grupo usando el método addTutor()
+            $tutors = TeacherFactory::new()->many(1, 3)->create();
+            foreach ($tutors as $tutor) {
+                $group->addTutor($tutor->object());
+            }
+        });
     }
 
     protected static function getClass(): string

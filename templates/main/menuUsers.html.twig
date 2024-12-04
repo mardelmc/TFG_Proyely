@@ -1,0 +1,94 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Menu{{ parent() }}{% endblock %}
+{% block content %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Administración</h1>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+
+            <!--Listar profesores-->
+            <div class="col">
+                <a href="{{path('listTeachers')}}" class="text-decoration-none text-dark">
+                    <div class="card text-center shadow-sm">
+                        <div class="card-body">
+                            <i class="fas fa-user-graduate fa-3x mb-3"></i>
+                            <h5 class="card-title">Lista profesores</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!--Listar alumnos-->
+            <div class="col">
+                <a href="{{path('listStudents')}}" class="text-decoration-none text-dark">
+                    <div class="card text-center shadow-sm">
+                        <div class="card-body">
+                            <i class="fas fa-user fa-3x mb-3"></i>
+                            <h5 class="card-title">Lista alumnos</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!--Listar grupos-->
+            <div class="col">
+                <a href="{#path('listGroups')#}" class="text-decoration-none text-dark">
+                    <div class="card text-center shadow-sm">
+                        <div class="card-body">
+                            <i class="fas fa-users fa-3x mb-3"></i>
+                            <h5 class="card-title">Lista grupos</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!--Año escolar-->
+            <div class="col">
+                <a href="{#path('listAcademicYear')#}" class="text-decoration-none text-dark">
+                    <div class="card text-center shadow-sm">
+                        <div class="card-body">
+                            <i class="fas fa-calendar fa-3x mb-3"></i>
+                            <h5 class="card-title">Año escolar</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!--Importar profesores-->
+            <div class="col">
+                <a href="{#path('importTeacher')#}" class="text-decoration-none text-dark">
+                    <div class="card text-center shadow-sm">
+                        <div class="card-body">
+                            <i class="fas fa-upload fa-3x mb-3"></i>
+                            <h5 class="card-title">Importar profesores</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!--Importar alumnos-->
+            <div class="col">
+                <a href="{#path('importStudent')#}" class="text-decoration-none text-dark">
+                    <div class="card text-center shadow-sm">
+                        <div class="card-body">
+                            <i class="fas fa-upload fa-3x mb-3"></i>
+                            <h5 class="card-title">Importar alumnos</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col">
+                <a href="{{path('menu')}}" class="text-decoration-none text-dark">
+                    <div class="card text-center shadow-sm">
+                        <div class="card-body">
+                            <i class="fas fa-arrow-left fa-3x mb-3"></i>
+                            <h5 class="card-title">Volver</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}

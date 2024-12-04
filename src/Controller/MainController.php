@@ -21,6 +21,12 @@ class MainController extends AbstractController
         return $this->render('main/menu.html.twig');
     }
 
+    #[Route('/admin', name: 'admin')]
+    final public function admin (): Response
+    {
+        return $this->render('main/menuUsers.html.twig');
+    }
+
     #[Route(path: '/signin', name: 'security_signin')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {

@@ -124,26 +124,42 @@ class UsersController extends AbstractController
     public function new(
         Request $request,
         TeacherRepository $teacherRepository,
+        GroupRepository $groupRepository,
     ): Response
     {
+        $this->logger->info('Saving Teacher',[$request->request->all()]);
         $teacher = new Teacher();
-        $teacherRepository->add($teacher);
         $form = $this->createForm(TeacherType::class, $teacher);
         $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()){
+        $isTutor = false;
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $teacher->addRole('ROLE_USER');
+
+            foreach ($teacher->getGroups() as $group) {
+                $group->addTutor($teacher);
+                $isTutor = true;
+            }
+
+            if ($isTutor) {
+                $teacher->addRole('ROLE_TUTOR');
+            }
+
             try {
-                $teacherRepository->save();
+                $teacherRepository->save($teacher, true);
+                $this->logger->info('Teacher saved');
                 $this->addFlash('success', 'El docente ha sido añadido.');
-                return $this->redirectToRoute('teacherModify');
-            }catch (\Exception $e){
+                return $this->redirectToRoute('listTeachers');
+            } catch (\Exception $e) {
                 $this->addFlash('error', 'El docente no se ha guardado. Error: ' . $e->getMessage());
             }
         }
 
-        return $this->render('project/edit.html.twig', [
-            'form' => $form->createView()
+        return $this->render('user/teacherModify.html.twig', [
+            'form' => $form->createView(),
         ]);
     }
+
     #[Route('/listTeachers/modify/{id}', name: 'modifyTeacher')]
     final public function modifyTeacher (
         Request $request,
@@ -157,7 +173,7 @@ class UsersController extends AbstractController
             try {
                 $teacherRepository->save();
                 $this->addFlash('success', 'La modificación se ha realizado correctamente');
-                return $this->redirectToRoute('');
+                return $this->redirectToRoute('listTeachers');
             }catch (\Exception $e){
                 $this->addFlash('error', 'No se han podido aplicar las modificaciones');
             }
@@ -179,14 +195,14 @@ class UsersController extends AbstractController
                 $teacherRepository->remove($teacher);
                 $teacherRepository->save();
                 $this->addFlash('success', 'El profesor ha sido eliminado con éxito');
-                return $this->redirectToRoute('');
+                return $this->redirectToRoute('listTeachers');
             }catch (\Exception $e){
                 $this->addFlash('error', 'No se ha podido eliminar al profesor. Error: ' . $e);
             }
         }
 
         return $this->render('user/teacherDelete.html.twig', [
-            'user' => $teacher
+            'teacher' => $teacher
         ]);
     }
 }

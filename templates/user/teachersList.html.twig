@@ -19,7 +19,7 @@
 
         <div class="form-group">
             <label for="teacherName">Buscar por Nombre:</label>
-            <input type="text" id="teacherName" name="teacherName" class="form-control" value="{{ selectedTeacher ? selectedTeacher : '' }}" placeholder="Nombre del profesor" list="teacherList">
+            <input type="search" id="teacherName" name="teacherName" class="form-control" value="{{ selectedTeacher ? selectedTeacher : '' }}" placeholder="Nombre del profesor" list="teacherList">
             <datalist id="teacherList">
                 {% for teacher in teachers %}
                     <option value="{{ teacher.firstName }} {{ teacher.lastName }}"></option>
@@ -84,8 +84,9 @@
                         Sin roles
                     {% endif %}
                 </td>
-                <td><a href="{# path('modifyTeacher', {'id': teacher.id}) #}" class="btn btn-info btn-sm">Editar</a></td>
-                <td><a href="{# path('deleteTeacher', {'id': teacher.id}) #}" class="btn btn-danger btn-sm">Eliminar</a></td>
+                <!--td>{{ dump(teacher) }}</td-->
+                <td><a href="{{ path('modifyTeacher', {'id': teacher.id}) }}" class="btn btn-info btn-sm">Editar</a></td>
+                <td><a href="{{ path('deleteTeacher', {'id': teacher.id}) }}" class="btn btn-danger btn-sm">Eliminar</a></td>
             </tr>
             {% endif %}
         {% else %}

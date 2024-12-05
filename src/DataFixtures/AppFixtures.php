@@ -36,7 +36,6 @@ class AppFixtures extends Fixture
         $teacher->setNickname('uwu');
         $teacher->setFirstName('Maria');
         $teacher->setLastName('Keeper');
-        $teacher->setTutor(true);
         $teacher->setPassword(
             $this->passwordHasher->hashPassword($teacher, '1234')
         );
@@ -53,9 +52,7 @@ class AppFixtures extends Fixture
             ]);
 
             foreach ($groups as $group) {
-                $tutors = TeacherFactory::createMany(1, [
-                    'tutor' => true,
-                ]);
+                $tutors = TeacherFactory::createMany(1);
                 foreach ($tutors as $tutor) {
                     $group->addTutor($tutor->object());
                 }

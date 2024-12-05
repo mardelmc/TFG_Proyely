@@ -22,12 +22,14 @@ class AcademicYear
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $endDate = null;
 
-
     #[ORM\OneToMany(mappedBy: 'academicYear', targetEntity: Group::class)]
     private Collection $groups;
 
     #[ORM\ManyToMany(targetEntity: Teacher::class, mappedBy: 'academicYears')]
     private Collection $teachers;
+
+    #[ORM\Column(length: 255)]
+    private ?string $description = null;
 
     public function __construct() {
         $this->groups = new ArrayCollection();
@@ -50,9 +52,6 @@ class AcademicYear
 
         return $this;
     }
-
-    #[ORM\Column(length: 255)]
-    private ?string $description = null;
 
     public function getEndDate(): ?\DateTimeInterface
     {
@@ -98,6 +97,7 @@ class AcademicYear
         }
         return $this;
     }
+
     public function getTeachers(): Collection {
         return $this->teachers;
     }
@@ -115,5 +115,12 @@ class AcademicYear
             $teacher->removeAcademicYear($this);
         }
         return $this;
+    }
+    public function __toString(): string
+    {
+        return sprintf('Academic Year: %s - %s',
+            $this->startDate ? $this->startDate->format('Y-m-d') : 'N/A',
+            $this->endDate ? $this->endDate->format('Y-m-d') : 'N/A'
+        );
     }
 }

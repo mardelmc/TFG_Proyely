@@ -25,10 +25,17 @@ class TeacherRepository extends ServiceEntityRepository
     {
         $this->getEntityManager()->persist($teacher);
     }
-    public function save(): void
+    public function save(Teacher $teacher = null, bool $isNew = false): void
     {
-        $this->getEntityManager()->flush();
+        $em = $this->getEntityManager();
+
+        if ($isNew) {
+            $em->persist($teacher);
+        }
+
+        $em->flush();
     }
+
     public function remove(Teacher $teacher): void
     {
         $this->getEntityManager()->remove($teacher);

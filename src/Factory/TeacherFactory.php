@@ -56,7 +56,6 @@ final class TeacherFactory extends ModelFactory
             'password' => $hashedPassword,
             'firstName' => self::faker()->name(),
             'lastName' => self::faker()->lastName(),
-            'tutor' => true,
         ];
     }
 
@@ -65,13 +64,14 @@ final class TeacherFactory extends ModelFactory
      */
     protected function initialize(): self
     {
-        return $this->afterInstantiate(function(Teacher $teacher): void {
-            if ($teacher->isTutor()) {
-                foreach ($teacher->getGroups() as $group) {
-                    $group->addTutor($teacher);
-                }
-            }
-        });
+//        return $this->afterInstantiate(function(Teacher $teacher): void {
+//            if ($teacher->isTutor()) {
+//                foreach ($teacher->getGroups() as $group) {
+//                    $group->addTutor($teacher);
+//                }
+//            }
+//        });
+        return $this;
     }
 
     protected static function getClass(): string

@@ -1,6 +1,18 @@
 {% extends 'layout.html.twig' %}
 
 {% block content %}
-
+    <h1>Eliminar profesor</h1>
+    <div class="alert alert-danger">
+        El profesor {{ teacher.firstname}} {{ teacher.lastName }} será eliminado de la aplicación.
+        La operación no se puede deshacer.
+    </div>
+    <form method="post">
+        <a href="{{ path('listTeachers') }}" class="btn btn-info">Volver al listado</a>
+        <button type="submit" name="confirmar" class="btn btn-danger">Confirmar
+            eliminación</button>
+    </form>
 {% endblock %}
 
+{% block title %}
+
+{% endblock %}

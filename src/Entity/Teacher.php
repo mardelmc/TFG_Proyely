@@ -6,25 +6,17 @@ use App\Repository\TeacherRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Validators\UniqueTutorPerAcademicYear;
 
 #[ORM\Entity(repositoryClass: TeacherRepository::class)]
 
 class Teacher extends User
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
     private ?string $lastName = null;
-
-    #[ORM\Column]
-    private ?bool $tutor = null;
 
     #[ORM\OneToMany(mappedBy: 'proposedBy', targetEntity: Project::class)]
     private Collection $projects;
@@ -62,11 +54,6 @@ class Teacher extends User
         return $this;
     }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
     public function getFirstName(): ?string
     {
         return $this->firstName;
@@ -93,16 +80,7 @@ class Teacher extends User
 
     public function isTutor(): ?bool
     {
-        return $this->tutor;
-    }
-
-    public function setTutor(bool $tutor): static
-    {
-        $this->tutor = $tutor;
-        if ($tutor) {
-            $this->addRole('ROLE_TUTOR');
-        }
-        return $this;
+        return !$this->groups->isEmpty();
     }
 
     public function getProjects(): Collection

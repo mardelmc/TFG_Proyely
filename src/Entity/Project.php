@@ -94,4 +94,9 @@ class Project
         $this->subjects->removeElement($subject);
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return $this->name;
+    }
 }

@@ -9,11 +9,6 @@ use App\Repository\StudentRepository;
 #[ORM\Entity(repositoryClass: StudentRepository::class)]
 class Student extends User
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
     #[ORM\Column(length: 255)]
     private ?string $firstName = null;
 
@@ -27,7 +22,7 @@ class Student extends User
     #[ORM\JoinColumn(nullable: false)]
     private ?Group $group = null;
 
-    #[ORM\OneToOne(targetEntity: Project::class, mappedBy: 'student')]
+    #[ORM\OneToOne(mappedBy: 'student', targetEntity: Project::class)]
     private ?Project $project = null;
 
     #[ORM\ManyToMany(targetEntity: Subject::class, mappedBy: 'students')]
@@ -39,9 +34,6 @@ class Student extends User
         $this->addRole('ROLE_STUDENT');
     }
 
-    public function getId(): ?int {
-        return $this->id;
-    }
 
     public function getFirstName(): ?string {
         return $this->firstName;

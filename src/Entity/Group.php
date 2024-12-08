@@ -131,4 +131,9 @@ class Group
         $this->academicYear = $academicYear;
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return $this->name;
+    }
 }

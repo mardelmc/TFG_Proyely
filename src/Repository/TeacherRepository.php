@@ -24,16 +24,11 @@ class TeacherRepository extends ServiceEntityRepository
     public function add(Teacher $teacher): void
     {
         $this->getEntityManager()->persist($teacher);
+        $this->getEntityManager()->flush();
     }
-    public function save(Teacher $teacher = null, bool $isNew = false): void
+    public function save(): void
     {
-        $em = $this->getEntityManager();
-
-        if ($isNew) {
-            $em->persist($teacher);
-        }
-
-        $em->flush();
+        $this->getEntityManager()->flush();
     }
 
     public function remove(Teacher $teacher): void
@@ -41,16 +36,11 @@ class TeacherRepository extends ServiceEntityRepository
         $this->getEntityManager()->remove($teacher);
     }
 
-    public function findTeachersWithFilters(?string $academicYear, ?string $teacherName, ?int $groupId): \Doctrine\ORM\Query
+    public function findTeachersWithFilters(?string $teacherName, ?int $groupId): \Doctrine\ORM\Query
     {
         $queryBuilder = $this->createQueryBuilder('t')
-            ->leftJoin('t.academicYears', 'ay')
             ->leftJoin('t.groups', 'g');
 
-        if ($academicYear) {
-            $queryBuilder->andWhere('ay.id = :academicYear')
-                ->setParameter('academicYear', $academicYear);
-        }
 
         if ($teacherName) {
             $queryBuilder->andWhere('CONCAT(t.firstName, \' \', t.lastName) LIKE :teacherName')

@@ -21,6 +21,31 @@ class SubjectRepository extends ServiceEntityRepository
         parent::__construct($registry, Subject::class);
     }
 
+    public function add(Subject $subject): void
+    {
+        $this->getEntityManager()->persist($subject);
+    }
+    public function save(): void
+    {
+        $this->getEntityManager()->flush();
+    }
+    public function remove(Subject $subject): void
+    {
+        $this->getEntityManager()->remove($subject);
+    }
+
+    public function findSubjectsWithFilters($subjectName): \Doctrine\ORM\Query
+    {
+        $qb = $this->createQueryBuilder('s');
+
+        if ($subjectName) {
+            $qb->andWhere('s.name LIKE :subjectName')
+                ->setParameter('subjectName', '%' . $subjectName . '%');
+        }
+
+        return $qb->getQuery();
+    }
+
 //    /**
 //     * @return Subject[] Returns an array of Subject objects
 //     */

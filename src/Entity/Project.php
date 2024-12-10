@@ -32,6 +32,10 @@ class Project
     #[ORM\JoinColumn(nullable: true)]
     private Collection $subjects;
 
+    #[ORM\ManyToOne(targetEntity: Group::class, inversedBy: 'projects')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Group $group = null;
+
     public function __construct()
     {
         $this->subjects = new ArrayCollection();
@@ -92,6 +96,17 @@ class Project
 
     public function removeSubject(Subject $subject): self {
         $this->subjects->removeElement($subject);
+        return $this;
+    }
+
+    public function getGroup(): ?Group
+    {
+        return $this->group;
+    }
+
+    public function setGroup(?Group $group): self
+    {
+        $this->group = $group;
         return $this;
     }
 

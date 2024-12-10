@@ -20,7 +20,7 @@ use Psr\Log\LoggerInterface;
 
 class ProjectController extends AbstractController
 {
-public function __construct(ManagerRegistry $registry, LoggerInterface $logger)
+public function __construct(LoggerInterface $logger)
 {
     $this->logger = $logger;
 }

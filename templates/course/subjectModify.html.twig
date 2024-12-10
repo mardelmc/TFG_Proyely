@@ -1,12 +1,12 @@
-{% extends 'layout.html.twig' %}
+{% extends '/layout.html.twig' %}
 {% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
 {% block content %}
     <div class="container">
-        <h1>Nuevo alumno</h1>
+        <h1>Nuevo módulo</h1>
         {{ form_start(form) }}
         {{ form_widget(form) }}
         <button type="submit" class="btn btn-primary">Guardar</button>
-        <a href="{{ path('listStudents') }}" class="btn btn-info">Volver al listado</a>
+        <a href="{{ path('listSubjects') }}" class="btn btn-info">Volver al listado</a>
         {{ form_end(form) }}
     </div>
 {% endblock %}

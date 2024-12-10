@@ -12,7 +12,7 @@
                     <div class="card text-center shadow-sm">
                         <div class="card-body">
                             <i class="fas fa-user-graduate fa-3x mb-3"></i>
-                            <h5 class="card-title">Lista profesores</h5>
+                            <h5 class="card-title">Lista docentes</h5>
                         </div>
                     </div>
                 </a>
@@ -32,7 +32,7 @@
 
             <!--Listar grupos-->
             <div class="col">
-                <a href="{#path('listGroups')#}" class="text-decoration-none text-dark">
+                <a href="{{path('listGroups')}}" class="text-decoration-none text-dark">
                     <div class="card text-center shadow-sm">
                         <div class="card-body">
                             <i class="fas fa-users fa-3x mb-3"></i>
@@ -42,9 +42,21 @@
                 </a>
             </div>
 
+            <!--Listar asignaturas-->
+            <div class="col">
+                <a href="{{path('listSubjects')}}" class="text-decoration-none text-dark">
+                    <div class="card text-center shadow-sm">
+                        <div class="card-body">
+                            <i class="fas fa-book fa-3x mb-3"></i>
+                            <h5 class="card-title">Lista módulos</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
             <!--Año escolar-->
             <div class="col">
-                <a href="{#path('listAcademicYear')#}" class="text-decoration-none text-dark">
+                <a href="{{path('listAcademicYears')}}" class="text-decoration-none text-dark">
                     <div class="card text-center shadow-sm">
                         <div class="card-body">
                             <i class="fas fa-calendar fa-3x mb-3"></i>
@@ -56,11 +68,11 @@
 
             <!--Importar profesores-->
             <div class="col">
-                <a href="{#path('importTeacher')#}" class="text-decoration-none text-dark">
+                <a href="{{path('importTeacher')}}" class="text-decoration-none text-dark">
                     <div class="card text-center shadow-sm">
                         <div class="card-body">
                             <i class="fas fa-upload fa-3x mb-3"></i>
-                            <h5 class="card-title">Importar profesores</h5>
+                            <h5 class="card-title">Importar docentes</h5>
                         </div>
                     </div>
                 </a>
@@ -68,7 +80,7 @@
 
             <!--Importar alumnos-->
             <div class="col">
-                <a href="{#path('importStudent')#}" class="text-decoration-none text-dark">
+                <a href="{{path('importStudent')}}" class="text-decoration-none text-dark">
                     <div class="card text-center shadow-sm">
                         <div class="card-body">
                             <i class="fas fa-upload fa-3x mb-3"></i>
@@ -77,6 +89,7 @@
                     </div>
                 </a>
             </div>
+
             <div class="col">
                 <a href="{{path('menu')}}" class="text-decoration-none text-dark">
                     <div class="card text-center shadow-sm">

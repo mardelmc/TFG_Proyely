@@ -51,17 +51,12 @@ class AppFixtures extends Fixture
                 'academicYear' => $academicYear,
             ]);
 
-            foreach ($groups as $group) {
-                $tutors = TeacherFactory::createMany(1);
-                foreach ($tutors as $tutor) {
-                    $group->addTutor($tutor->object());
-                }
-
-                $students = StudentFactory::createMany(5, [
-                    'group' => $group,
-                ]);
-                $allStudents = array_merge($allStudents, $students);
-            }
+//            foreach ($groups as $group) {
+//                $tutors = TeacherFactory::createMany(1);
+//                foreach ($tutors as $tutor) {
+//                    $group->addTutor($tutor->object());
+//                }
+//            }
         }
 
 

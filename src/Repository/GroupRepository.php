@@ -16,11 +16,51 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class GroupRepository extends ServiceEntityRepository
 {
+    public function add(Group $group): void
+    {
+        $this->getEntityManager()->persist($group);
+    }
+    public function save(): void
+    {
+        $this->getEntityManager()->flush();
+    }
+    public function remove(Group $group): void
+    {
+        $this->getEntityManager()->remove($group);
+    }
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Group::class);
     }
 
+    public function findGroupsWithFilters($academicYear, $groupName): \Doctrine\ORM\Query
+    {
+        $qb = $this->createQueryBuilder('g')
+            ->leftJoin('g.academicYear', 'ay')
+            ->addSelect('ay');
+
+        if ($academicYear) {
+            $qb->andWhere('ay.id = :academicYear')
+                ->setParameter('academicYear', $academicYear);
+        }
+
+        if ($groupName) {
+            $qb->andWhere('g.name LIKE :groupName')
+                ->setParameter('groupName', '%' . $groupName . '%');
+        }
+
+        return $qb->getQuery();
+    }
+    public function findGroupsByTutor(int $teacherId): array
+    {
+        return $this->createQueryBuilder('g')
+            ->innerJoin('g.tutors', 't')
+            ->where('t.id = :teacherId')
+            ->setParameter('teacherId', $teacherId)
+            ->getQuery()
+            ->getResult();
+    }
 //    /**
 //     * @return Group[] Returns an array of Group objects
 //     */

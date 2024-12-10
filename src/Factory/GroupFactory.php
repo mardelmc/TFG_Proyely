@@ -60,7 +60,7 @@ final class GroupFactory extends ModelFactory
         ];
 
         return [
-            'academicYear' => AcademicYearFactory::new(),
+            'academicYear' => AcademicYearFactory::randomOrCreate(),
             'description' => self::faker()->text(255),
             'name' => sprintf(
                 '%sº F.P.G.S. (%s)',
@@ -76,10 +76,39 @@ final class GroupFactory extends ModelFactory
     protected function initialize(): self
     {
         return $this->afterInstantiate(function (Group $group): void {
-            // Asignar tutores al grupo usando el método addTutor()
-            $tutors = TeacherFactory::new()->many(1, 3)->create();
-            foreach ($tutors as $tutor) {
-                $group->addTutor($tutor->object());
+            // Crear un tutor para el grupo
+            $tutor = TeacherFactory::new()->create();
+            $group->addTutor($tutor->object());
+
+            // Crear dos subjects para el grupo
+            $subject1 = SubjectFactory::createOne();
+            $subject2 = SubjectFactory::createOne();
+
+            // Crear estudiantes asociados al grupo
+            $students = StudentFactory::createMany(5, [
+                'group' => $group,
+            ]);
+
+            // Crear 4 proyectos para el grupo, 2 para cada subject
+            foreach (range(1, 4) as $index) {
+                $subject = $index <= 2 ? $subject1 : $subject2; // Alternar entre los subjects
+                $student = $students[$index - 1]->object(); // Asignar estudiante a cada proyecto
+
+                $project = ProjectFactory::createOne([
+                    'group' => $group,
+                    'student' => $student,
+                    'proposedBy' => $tutor->object(), // El tutor como proponente
+                ]);
+
+                // Asignar 1 o 2 subjects al proyecto de forma aleatoria
+                $assignedSubjects = [$subject1];
+                if (random_int(0, 1)) {
+                    $assignedSubjects[] = $subject2; // Posiblemente asignar el segundo subject
+                }
+
+                foreach ($assignedSubjects as $subject) {
+                    $project->addSubject($subject->object());
+                }
             }
         });
     }

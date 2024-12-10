@@ -1,0 +1,117 @@
+{% extends '/layout.html.twig' %}
+{% block title %}Lista de Grupos{{ parent() }}{% endblock %}
+{% block content %}
+
+    <h1>Grupos</h1>
+
+    <form method="get" id="filterForm">
+        <div class="form-group">
+            <label for="academicYear">Filtrar por Año Académico:</label>
+            <select id="academicYear" name="academicYear" class="form-control">
+                <option value="" {% if selectedAcademicYear is empty %}selected{% endif %}>Todos los Años</option>
+                {% for year in academicYears %}
+                    <option value="{{ year.id }}" {% if selectedAcademicYear == year.id %}selected{% endif %}>
+                        {{ year.description }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="groupName">Buscar por Nombre:</label>
+            <input type="search" id="groupName" name="groupName" class="form-control" value="{{ selectedGroupName ? selectedGroupName : '' }}" placeholder="Nombre del grupo">
+        </div>
+
+        <button type="button" class="btn btn-primary mt-3" onclick="submitFilterForm()">Buscar</button>
+    </form>
+
+    <div style="text-align: right">
+        <a href="{{ path('newGroup') }}" class="btn btn-success">Añadir Nuevo Grupo</a>
+    </div>
+
+    <table class="table table-bordered table-hover table-striped mt-4">
+        <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Año Académico</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for group in pagination.items %}
+            <tr>
+                <td>{{ group.name }}</td>
+                <td>{{ group.description | default('Sin descripción') }}</td>
+                <td>{{ group.academicYear.description | default('Sin año académico') }}</td>
+                <td>
+                    <a href="{{ path('modifyGroup', {'id': group.id}) }}" class="btn btn-info btn-sm">Editar</a>
+                    <a href="{{ path('deleteGroup', {'id': group.id}) }}" class="btn btn-danger btn-sm">Eliminar</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">No hay grupos que coincidan con los filtros.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <nav class="pagination is-centered mt-4" role="navigation" aria-label="pagination">
+        <ul class="pagination justify-content-center">
+            {% if pagination.currentPageNumber > 1 %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ path('listGroups', app.request.query.all|merge({'page': pagination.currentPageNumber - 1})) }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo; Anterior</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">&laquo; Anterior</span>
+                </li>
+            {% endif %}
+
+            {% for page in 1..pagination.pageCount %}
+                {% if page == pagination.currentPageNumber %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ page }}</span>
+                    </li>
+                {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ path('listGroups', app.request.query.all|merge({'page': page})) }}">{{ page }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if pagination.currentPageNumber < pagination.pageCount %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ path('listGroups', app.request.query.all|merge({'page': pagination.currentPageNumber + 1})) }}" aria-label="Next">
+                        <span aria-hidden="true">Siguiente &raquo;</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">Siguiente &raquo;</span>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <script>
+        function submitFilterForm() {
+            const form = document.getElementById('filterForm');
+            const yearSelect = document.getElementById('academicYear');
+            const groupInput = document.getElementById('groupName');
+
+            if (yearSelect.value === '') {
+                yearSelect.name = '';
+            }
+            if (groupInput.value === '') {
+                groupInput.name = '';
+            }
+
+            form.submit();
+        }
+    </script>
+
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends 'layout.html.twig' %}
+{% block title %}Lista de Años Escolares{{ parent() }}{% endblock %}
+{% block content %}
+
+    <h1>Años Escolares</h1>
+
+    <form method="get" id="filterForm">
+        <div class="form-group">
+            <label for="description">Buscar por Descripción:</label>
+            <input type="search" id="description" name="description" class="form-control" value="{{ selectedDescription ? selectedDescription : '' }}" placeholder="Descripción del año escolar">
+        </div>
+
+        <button type="button" class="btn btn-primary mt-3" onclick="submitFilterForm()">Buscar</button>
+    </form>
+
+    <div style="text-align: right">
+        <a href="{{ path('newAcademicYear') }}" class="btn btn-success">Añadir Nuevo Año Escolar</a>
+    </div>
+
+    <table class="table table-bordered table-hover table-striped mt-4">
+        <thead>
+        <tr>
+            <th>Fecha de Inicio</th>
+            <th>Fecha de Fin</th>
+            <th>Descripción</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for academicYear in pagination.items %}
+            <tr>
+                <td>{{ academicYear.startDate|date('Y-m-d') }}</td>
+                <td>{{ academicYear.endDate|date('Y-m-d') }}</td>
+                <td>{{ academicYear.description }}</td>
+                <td>
+                    <a href="{{ path('modifyAcademicYear', {'id': academicYear.id}) }}" class="btn btn-info btn-sm">Editar</a>
+                    <a href="{{ path('deleteAcademicYear', {'id': academicYear.id}) }}" class="btn btn-danger btn-sm">Eliminar</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">No hay años escolares que coincidan con los filtros.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <nav class="pagination is-centered mt-4" role="navigation" aria-label="pagination">
+        <ul class="pagination justify-content-center">
+            {% if pagination.currentPageNumber > 1 %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ path('listAcademicYears', app.request.query.all|merge({'page': pagination.currentPageNumber - 1})) }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo; Anterior</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">&laquo; Anterior</span>
+                </li>
+            {% endif %}
+
+            {% for page in 1..pagination.pageCount %}
+                {% if page == pagination.currentPageNumber %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ page }}</span>
+                    </li>
+                {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ path('listAcademicYears', app.request.query.all|merge({'page': page})) }}">{{ page }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if pagination.currentPageNumber < pagination.pageCount %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ path('listAcademicYears', app.request.query.all|merge({'page': pagination.currentPageNumber + 1})) }}" aria-label="Next">
+                        <span aria-hidden="true">Siguiente &raquo;</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">Siguiente &raquo;</span>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <script>
+        function submitFilterForm() {
+            const form = document.getElementById('filterForm');
+            const descriptionInput = document.getElementById('description');
+
+            if (descriptionInput.value === '') {
+                descriptionInput.name = '';
+            }
+
+            form.submit();
+        }
+    </script>
+
+{% endblock %}

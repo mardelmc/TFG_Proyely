@@ -8,7 +8,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TeacherRepository::class)]
-
 class Teacher extends User
 {
 
@@ -21,16 +20,11 @@ class Teacher extends User
     #[ORM\OneToMany(mappedBy: 'proposedBy', targetEntity: Project::class)]
     private Collection $projects;
 
-    #[ORM\ManyToMany(targetEntity: Group::class, mappedBy: 'tutors')]
+    #[ORM\ManyToMany(targetEntity: Group::class, mappedBy: 'tutors', cascade: ['persist', 'remove'])]
     private Collection $groups;
-
-    #[ORM\ManyToMany(targetEntity: AcademicYear::class, inversedBy: 'teachers')]
-    #[ORM\JoinTable(name: 'teacher_academic_year')]
-    private Collection $academicYears;
 
     public function __construct() {
         $this->projects = new ArrayCollection();
-        $this->academicYears = new ArrayCollection();
         $this->groups = new ArrayCollection();
         $this->addRole('ROLE_TEACHER');
     }
@@ -109,36 +103,6 @@ class Teacher extends User
         return $this;
     }
 
-    public function getTutoredGroup(): Collection
-    {
-        return $this->tutoredGroup;
-    }
-
-    public function setTutoredGroup(Collection $group): self
-    {
-        $this->tutoredGroup = $group;
-
-        return $this;
-    }
-
-    public function getAcademicYears(): Collection {
-        return $this->academicYears;
-    }
-
-    public function addAcademicYear(AcademicYear $academicYear): self {
-        if (!$this->academicYears->contains($academicYear)) {
-            $this->academicYears[] = $academicYear;
-            $academicYear->addTeacher($this);
-        }
-        return $this;
-    }
-
-    public function removeAcademicYear(AcademicYear $academicYear): self {
-        if ($this->academicYears->removeElement($academicYear)) {
-            $academicYear->removeTeacher($this);
-        }
-        return $this;
-    }
     public function __toString(): string
     {
         return $this->firstName . ' ' . $this->lastName;

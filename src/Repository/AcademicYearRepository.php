@@ -21,6 +21,34 @@ class AcademicYearRepository extends ServiceEntityRepository
         parent::__construct($registry, AcademicYear::class);
     }
 
+    public function add(AcademicYear $academicYear): void
+    {
+        $this->getEntityManager()->persist($academicYear);
+        $this->getEntityManager()->flush();
+    }
+    public function save(): void
+    {
+        $this->getEntityManager()->flush();
+    }
+    public function remove(AcademicYear $academicYear): void
+    {
+        $this->getEntityManager()->remove($academicYear);
+    }
+
+
+    public function findAcademicYearsWithFilters($description): \Doctrine\ORM\Query
+    {
+        $qb = $this->createQueryBuilder('ay');
+
+        if ($description) {
+            $qb->andWhere('ay.description LIKE :description')
+                ->setParameter('description', '%' . $description . '%');
+        }
+
+        return $qb->getQuery();
+    }
+
+
 //    /**
 //     * @return AcademicYear[] Returns an array of AcademicYear objects
 //     */

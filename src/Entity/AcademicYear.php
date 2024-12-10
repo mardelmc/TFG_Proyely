@@ -25,15 +25,14 @@ class AcademicYear
     #[ORM\OneToMany(mappedBy: 'academicYear', targetEntity: Group::class)]
     private Collection $groups;
 
-    #[ORM\ManyToMany(targetEntity: Teacher::class, mappedBy: 'academicYears')]
-    private Collection $teachers;
-
     #[ORM\Column(length: 255)]
     private ?string $description = null;
 
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private ?bool $isActive = false;
+
     public function __construct() {
         $this->groups = new ArrayCollection();
-        $this->teachers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -98,24 +97,6 @@ class AcademicYear
         return $this;
     }
 
-    public function getTeachers(): Collection {
-        return $this->teachers;
-    }
-
-    public function addTeacher(Teacher $teacher): self {
-        if (!$this->teachers->contains($teacher)) {
-            $this->teachers[] = $teacher;
-            $teacher->addAcademicYear($this);
-        }
-        return $this;
-    }
-
-    public function removeTeacher(Teacher $teacher): self {
-        if ($this->teachers->removeElement($teacher)) {
-            $teacher->removeAcademicYear($this);
-        }
-        return $this;
-    }
     public function __toString(): string
     {
         return sprintf('Academic Year: %s - %s',

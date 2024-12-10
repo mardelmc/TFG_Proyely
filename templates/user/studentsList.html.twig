@@ -1,9 +1,52 @@
 {% extends 'layout.html.twig' %}
-
+{% block title %}Lista de Estudiantes{{ parent() }}{% endblock %}
 {% block content %}
-    <h1>Estudiantes</h1>
 
-    <table class="table table-bordered table-hover table-stripped">
+    <h1>Alumnos</h1>
+
+    <form method="get" id="filterForm">
+        <div class="form-group">
+            <label for="academicYear">Filtrar por Año Académico:</label>
+            <select id="academicYear" name="academicYear" class="form-control">
+                <option value="" {% if selectedAcademicYear is empty %}selected{% endif %}>Todos los Años</option>
+                {% for year in academicYears %}
+                    <option value="{{ year.id }}" {% if selectedAcademicYear == year.id %}selected{% endif %}>
+                        {{ year.description }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="studentName">Buscar por Nombre:</label>
+            <input type="search" id="studentName" name="studentName" class="form-control" value="{{ selectedStudent ? selectedStudent : '' }}" placeholder="Nombre del alumno" list="studentList">
+            <datalist id="studentList">
+                {% for student in pagination.items %}
+                    <option value="{{ student.firstName }} {{ student.lastName }}"></option>
+                {% endfor %}
+            </datalist>
+        </div>
+
+        <div class="form-group">
+            <label for="group">Filtrar por Grupo:</label>
+            <select id="group" name="group" class="form-control">
+                <option value="" {% if selectedGroup is empty %}selected{% endif %}>Todos los Grupos</option>
+                {% for group in groups %}
+                    <option value="{{ group.id }}" {% if selectedGroup == group.id %}selected{% endif %}>
+                        {{ group.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="button" class="btn btn-primary mt-3" onclick="submitFilterForm()">Buscar</button>
+    </form>
+
+    <div style="text-align: right">
+        <a href="{{ path('newStudent') }}" class="btn btn-success">Añadir Nuevo Alumno</a>
+    </div>
+
+    <table class="table table-bordered table-hover table-striped mt-4">
         <thead>
         <tr>
             <th>Nombre</th>
@@ -18,24 +61,95 @@
         </tr>
         </thead>
         <tbody>
-        {% for student in students %}
+        {% for student in pagination.items %}
             <tr>
                 <td>{{ student.firstName }}</td>
                 <td>{{ student.lastName }}</td>
-                <td>{{ student.mark ? null : "No Asignada"}}</td>
-                <td>{{ student.mark ? null : "No Asignado"}}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><a href="{# path('modifyStudent', {'id': student.id}) #}" class="btn btn-info btn-sm">Editar</a></td>
-                <td><a href="{# path('deleteStudent', {'id': student.id}) #}" class="btn btn-danger btn-sm">Eliminar</a></td>
-
+                <td>{{ student.group.name | default('Sin grupo') }}</td>
+                <td>{{ student.mark | default('No asignada') }}</td>
+                <td>
+                    {{ student.project | default ('Sin proyecto') }}
+                </td>
+                <td>{{ student.nickname | default('Sin usuario asociado') }}</td>
+                <td>
+                    {% if student.roles|length > 0 %}
+                        {% for role in student.roles %}
+                            {{ role }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        Sin roles
+                    {% endif %}
+                </td>
+                <td><a href="{{ path('modifyStudent', {'id': student.id}) }}" class="btn btn-info btn-sm">Editar</a></td>
+                <td><a href="{{ path('deleteStudent', {'id': student.id}) }}" class="btn btn-danger btn-sm">Eliminar</a></td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="3">No hay estudiantes asignados a este profesor</td>
+                <td colspan="10">No hay alumnos que coincidan con los filtros.</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
+
+    <nav class="pagination is-centered mt-4" role="navigation" aria-label="pagination">
+        <ul class="pagination justify-content-center">
+            {% if pagination.currentPageNumber > 1 %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ path('listStudents', app.request.query.all|merge({'page': pagination.currentPageNumber - 1})) }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo; Anterior</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">&laquo; Anterior</span>
+                </li>
+            {% endif %}
+
+            {% for page in 1..pagination.pageCount %}
+                {% if page == pagination.currentPageNumber %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ page }}</span>
+                    </li>
+                {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ path('listStudents', app.request.query.all|merge({'page': page})) }}">{{ page }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if pagination.currentPageNumber < pagination.pageCount %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ path('listStudents', app.request.query.all|merge({'page': pagination.currentPageNumber + 1})) }}" aria-label="Next">
+                        <span aria-hidden="true">Siguiente &raquo;</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">Siguiente &raquo;</span>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <script>
+        function submitFilterForm() {
+            const form = document.getElementById('filterForm');
+            const studentInput = document.getElementById('studentName');
+            const yearSelect = document.getElementById('academicYear');
+            const groupSelect = document.getElementById('group');
+
+            if (studentInput.value === '') {
+                studentInput.name = '';
+            }
+            if (yearSelect.value === '') {
+                yearSelect.name = '';
+            }
+            if (groupSelect.value === '') {
+                groupSelect.name = '';
+            }
+
+            form.submit();
+        }
+    </script>
+
 {% endblock %}

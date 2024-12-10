@@ -101,7 +101,7 @@ class Student extends User
 
     public function __toString(): string
     {
-        return $this->firstName . ' ' . $this->lastName;
+        return $this->getId() . ' ' . $this->firstName . ' ' . $this->lastName . ' ' . $this->mark;
     }
 
 }

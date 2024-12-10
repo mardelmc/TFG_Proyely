@@ -17,6 +17,11 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class StudentRepository extends ServiceEntityRepository
 {
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Student::class);
+    }
+
     public function add(Student $student): void
     {
         $this->getEntityManager()->persist($student);
@@ -30,19 +35,40 @@ class StudentRepository extends ServiceEntityRepository
         $this->getEntityManager()->remove($student);
     }
 
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, Student::class);
-    }
-
     public function findByTutor($tutor): array
     {
         return $this->createQueryBuilder('s')
-            ->innerJoin('s.group', 'g')
-            ->where('g.tutor = :tutorId')
-            ->setParameter('tutorId', $tutor)
-            ->getQuery()
-            ->getResult();
+        ->innerJoin('s.group', 'g')
+        ->innerJoin('g.tutors', 't')
+        ->where('t = :tutor')
+        ->setParameter('tutor', $tutor)
+        ->getQuery()
+        ->getResult();
+    }
+
+    public function findStudentsWithFilters($academicYear, $studentName, $group): \Doctrine\ORM\Query
+    {
+        $qb = $this->createQueryBuilder('s')
+            ->leftJoin('s.group', 'g')
+            ->leftJoin('g.academicYear', 'ay')
+            ->addSelect('g', 'ay');
+
+        if ($academicYear) {
+            $qb->andWhere('ay.id = :academicYear')
+                ->setParameter('academicYear', $academicYear);
+        }
+
+        if ($studentName) {
+            $qb->andWhere('CONCAT(s.firstName, \' \', s.lastName) LIKE :studentName')
+                ->setParameter('studentName', '%' . $studentName . '%');
+        }
+
+        if ($group) {
+            $qb->andWhere('g.id = :group')
+                ->setParameter('group', $group);
+        }
+
+        return $qb->getQuery();
     }
 
 //    /**

@@ -31,7 +31,6 @@ class TeacherType extends AbstractType
             ])
             ->add('firstName')
             ->add('lastName')
-            ->add('academicYears')
             ->add('groups', EntityType::class, [
                 'class' => Group::class,
                 'choice_label' => 'name',

@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Project;
 use App\Entity\Student;
+use App\Entity\Subject;
 use App\Entity\Teacher;
 use App\Repository\StudentRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -27,9 +28,16 @@ class ProjectType extends AbstractType
 
         $builder
             ->add('name')
-            ->add('description');
-
-
+            ->add('description')
+            ->add('subjects', EntityType::class, [
+                'class' => Subject::class,
+                'choice_label' => 'name', // Muestra el nombre del Subject
+                'multiple' => true, // Permite seleccionar múltiples Subjects
+                'expanded' => true, // Usa checkboxes para seleccionar
+                'required' => false,
+                'placeholder' => 'Seleccione un módulo', // Agrega un placeholder opcional
+            ])
+        ;
         if ($user && in_array('ROLE_ADMIN', $user->getRoles())) {
             $builder->add('proposedBy', EntityType::class, [
                 'class' => Teacher::class,
@@ -40,9 +48,7 @@ class ProjectType extends AbstractType
                 'class' => Teacher::class,
                 'data' => $user,
                 'attr' => ['readonly' => true],
-            ]);
-        }
-
+            ]);}
     }
 
     public function configureOptions(OptionsResolver $resolver): void

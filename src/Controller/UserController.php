@@ -10,6 +10,7 @@ use App\Repository\AcademicYearRepository;
 use App\Repository\GroupRepository;
 use App\Repository\StudentRepository;
 use App\Repository\TeacherRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\PaginatorInterface;
 use Psr\Log\LoggerInterface;
@@ -18,7 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class UsersController extends AbstractController
+class UserController extends AbstractController
 {
     public function __construct(ManagerRegistry $registry, LoggerInterface $logger)
     {
@@ -26,16 +27,60 @@ class UsersController extends AbstractController
     }
     //Students
     #[Route('/listStudents', name: 'listStudents')]
-    final public function listStudents (
+    final public function listStudents(
+        Request $request,
         StudentRepository $studentRepository,
+        GroupRepository $groupRepository,
         AcademicYearRepository $academicYearRepository,
-    ): Response
-    {
-        $students = $studentRepository->findAll();
-        $academicYear = $academicYearRepository->findAll();
+        PaginatorInterface $paginator
+    ): Response {
+        $selectedAcademicYear = $request->query->get('academicYear');
+        $selectedStudent = $request->query->get('studentName');
+        $selectedGroup = $request->query->get('group');
+
+        $studentsQuery = $studentRepository->findStudentsWithFilters($selectedAcademicYear, $selectedStudent, $selectedGroup);
+
+        $pagination = $paginator->paginate(
+            $studentsQuery,
+            $request->query->getInt('page', 1),
+            10
+        );
 
         return $this->render('user/studentsList.html.twig', [
-            'students' => $students,
+            'pagination' => $pagination,
+            'selectedAcademicYear' => $selectedAcademicYear,
+            'selectedStudent' => $selectedStudent,
+            'selectedGroup' => $selectedGroup,
+            'academicYears' => $academicYearRepository->findAll(),
+            'groups' => $groupRepository->findAll(),
+        ]);
+    }
+
+    #[Route('/listStudents/new', name: 'newStudent')]
+    public function newStudent(
+        Request $request,
+        StudentRepository $studentRepository,
+        GroupRepository $groupRepository,
+    ): Response
+    {
+        $this->logger->info('Saving Student',[$request->request->all()]);
+        $student = new Student();
+        $form = $this->createForm(StudentType::class, $student);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $student->addRole('ROLE_USER');
+
+            try {
+                $studentRepository->save($student, true);
+                $this->addFlash('success', 'El alumno ha sido añadido.');
+                return $this->redirectToRoute('listTeachers');
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'El alumno no se ha guardado. Error: ' . $e->getMessage());
+            }
+        }
+
+        return $this->render('user/studentModify.html.twig', [
+            'form' => $form->createView(),
         ]);
     }
 
@@ -121,7 +166,7 @@ class UsersController extends AbstractController
     }
 
     #[Route('/listTeachers/new', name: 'newTeacher')]
-    public function new(
+    public function newTeacher(
         Request $request,
         TeacherRepository $teacherRepository,
         GroupRepository $groupRepository,
@@ -146,7 +191,7 @@ class UsersController extends AbstractController
             }
 
             try {
-                $teacherRepository->save($teacher, true);
+                $teacherRepository->add($teacher);
                 $this->logger->info('Teacher saved');
                 $this->addFlash('success', 'El docente ha sido añadido.');
                 return $this->redirectToRoute('listTeachers');
@@ -164,15 +209,35 @@ class UsersController extends AbstractController
     final public function modifyTeacher (
         Request $request,
         TeacherRepository $teacherRepository,
+        GroupRepository $groupRepository,
         Teacher $teacher,
     ): Response
     {
+        $this->logger->info('Updating Teacher',[$request->request->all()]);
+
+        $originalGroups = new ArrayCollection($teacher->getGroups()->toArray());
         $form = $this->createForm(TeacherType::class, $teacher);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             try {
+                $newGroups = $teacher->getGroups();
+
+                foreach ($originalGroups as $originalGroup) {
+                    if (!$newGroups->contains($originalGroup)) {
+                        $originalGroup->removeTutor($teacher);
+                        $groupRepository->save();
+                    }
+                }
+
+                foreach ($teacher->getGroups() as $group) {
+                    $group->addTutor($teacher);
+                    $groupRepository->save();
+                }
+
                 $teacherRepository->save();
                 $this->addFlash('success', 'La modificación se ha realizado correctamente');
+
+
                 return $this->redirectToRoute('listTeachers');
             }catch (\Exception $e){
                 $this->addFlash('error', 'No se han podido aplicar las modificaciones');

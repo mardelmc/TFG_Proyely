@@ -1,0 +1,99 @@
+{% extends 'layout.html.twig' %}
+{% block title %}Lista de Módulos{{ parent() }}{% endblock %}
+{% block content %}
+
+    <h1>Módulos</h1>
+
+    <form method="get" id="filterForm">
+        <div class="form-group">
+            <label for="subjectName">Buscar por Nombre:</label>
+            <input type="search" id="subjectName" name="subjectName" class="form-control" value="{{ selectedSubjectName ? selectedSubjectName : '' }}" placeholder="Nombre del módulo">
+        </div>
+
+        <button type="button" class="btn btn-primary mt-3" onclick="submitFilterForm()">Buscar</button>
+    </form>
+
+    <div style="text-align: right">
+        <a href="{{ path('newSubject') }}" class="btn btn-success">Añadir Nuevo Módulo</a>
+    </div>
+
+    <table class="table table-bordered table-hover table-striped mt-4">
+        <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for subject in pagination.items %}
+            <tr>
+                <td>{{ subject.name }}</td>
+                <td>{{ subject.description | default('Sin descripción') }}</td>
+                <td>
+                    <a href="{{ path('modifySubject', {'id': subject.id}) }}" class="btn btn-info btn-sm">Editar</a>
+                    <a href="{{ path('deleteSubject', {'id': subject.id}) }}" class="btn btn-danger btn-sm">Eliminar</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">No hay módulos que coincidan con los filtros.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <nav class="pagination is-centered mt-4" role="navigation" aria-label="pagination">
+        <ul class="pagination justify-content-center">
+            {% if pagination.currentPageNumber > 1 %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ path('listSubjects', app.request.query.all|merge({'page': pagination.currentPageNumber - 1})) }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo; Anterior</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">&laquo; Anterior</span>
+                </li>
+            {% endif %}
+
+            {% for page in 1..pagination.pageCount %}
+                {% if page == pagination.currentPageNumber %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ page }}</span>
+                    </li>
+                {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ path('listSubjects', app.request.query.all|merge({'page': page})) }}">{{ page }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if pagination.currentPageNumber < pagination.pageCount %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ path('listSubjects', app.request.query.all|merge({'page': pagination.currentPageNumber + 1})) }}" aria-label="Next">
+                        <span aria-hidden="true">Siguiente &raquo;</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">Siguiente &raquo;</span>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <script>
+        function submitFilterForm() {
+            const form = document.getElementById('filterForm');
+            const subjectInput = document.getElementById('subjectName');
+
+            if (subjectInput.value === '') {
+                subjectInput.name = '';
+            }
+
+            form.submit();
+        }
+    </script>
+
+{% endblock %}

@@ -36,10 +36,14 @@ class Group
     #[ORM\JoinColumn(nullable: false)]
     private ?AcademicYear $academicYear = null;
 
+    #[ORM\OneToMany(mappedBy: 'group', targetEntity: Project::class, cascade: ['persist', 'remove'])]
+    private Collection $projects;
+
     public function __construct() {
         $this->subjects = new ArrayCollection();
         $this->students = new ArrayCollection();
         $this->tutors = new ArrayCollection();
+        $this->projects = new ArrayCollection();
     }
 
     public function getTutors(): Collection {
@@ -129,6 +133,26 @@ class Group
 
     public function setAcademicYear(?AcademicYear $academicYear): self {
         $this->academicYear = $academicYear;
+        return $this;
+    }
+
+    public function addProject(Project $project): self
+    {
+        if (!$this->projects->contains($project)) {
+            $this->projects[] = $project;
+            $project->setGroup($this);
+        }
+        return $this;
+    }
+
+    public function removeProject(Project $project): self
+    {
+        if ($this->projects->removeElement($project)) {
+            // Set the owning side to null (unless already changed)
+            if ($project->getGroup() === $this) {
+                $project->setGroup(null);
+            }
+        }
         return $this;
     }
 

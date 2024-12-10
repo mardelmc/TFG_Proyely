@@ -85,7 +85,7 @@ $this->logger->info('Saving project', ['project' => $project->getName()]);
         }
 
         if ($proposedBy) {
-            $qb->andWhere('t.name LIKE :proposedBy')
+            $qb->andWhere('t.nickname LIKE :proposedBy')
                 ->setParameter('proposedBy', '%' . $proposedBy . '%');
         }
 

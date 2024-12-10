@@ -1,0 +1,61 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+    <h1>Proyectos del Grupo</h1>
+
+    <form id="priorityForm" method="post" action="{{ path('prioritizeProjects') }}">
+        <ul id="sortableList" class="list-group">
+            {% for project in projects %}
+                <li class="list-group-item" data-project-id="{{ project.id }}">
+                    <strong>{{ project.name }}</strong> - {{ project.description }}
+                </li>
+            {% else %}
+                <li class="list-group-item">No hay proyectos disponibles.</li>
+            {% endfor %}
+        </ul>
+
+        <input type="hidden" name="orderedProjectIds" id="orderedProjectIds">
+        <button type="submit" class="btn btn-primary mt-3">Guardar Prioridades</button>
+    </form>
+
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script>
+        // Inicializamos Sortable.js en la lista con el ID `sortableList`
+        const sortable = new Sortable(document.getElementById('sortableList'), {
+            animation: 150, // Animación suave al mover los elementos
+            onEnd: function () {
+                updateOrder(); // Actualiza el orden después de cada acción de arrastrar y soltar
+            }
+        });
+
+        /**
+         * Función para actualizar el campo oculto con el orden actual de los proyectos.
+         * Recorre los elementos de la lista y obtiene el atributo `data-project-id`
+         * de cada uno para crear un array que representa el orden actual.
+         */
+        function updateOrder() {
+            // Selecciona todos los elementos dentro de la lista con `list-group-item`
+            const orderedIds = Array.from(document.querySelectorAll('#sortableList .list-group-item'))
+                .map(item => item.dataset.projectId); // Extrae el valor de `data-project-id`
+
+            // Actualiza el valor del campo oculto con el array convertido a JSON
+            document.getElementById('orderedProjectIds').value = JSON.stringify(orderedIds);
+
+            console.log('Orden actualizado:', orderedIds); // Depuración: imprime el orden en la consola
+        }
+
+        /**
+         * Al enviar el formulario, verifica que el campo oculto tenga el valor correcto.
+         * Actualiza el orden justo antes de enviar, para garantizar que esté sincronizado.
+         */
+        document.getElementById('priorityForm').addEventListener('submit', function (event) {
+            // Asegúrate de que el orden esté actualizado
+            updateOrder();
+            console.log('Formulario enviado con prioridades:', document.getElementById('orderedProjectIds').value); // Depuración
+        });
+
+        // Actualiza el orden inicial cuando la página se carga
+        updateOrder();
+    </script>
+
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends 'layout.html.twig' %}
+{% block content %}
+    <h1>Estudiantes del grupo</h1>
+    <table class="table table-bordered table-hover table-stripped">
+        <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Apellidos</th>
+            <th>Nota</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for student in students %}
+            <tr>
+                <td>{{ student.firstName }}</td>
+                <td>{{ student.lastName }}</td>
+                <td>{{ student.mark ? student.mark : "No Asignada" }}</td>
+                <td>
+                    <!-- Botón para actualizar nota -->
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateMarkModal{{ student.id }}">
+                        <i class="fa-solid fa-pencil"></i> Editar Nota
+                    </button>
+
+                    <!-- Botón para ver prioridades -->
+                    <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#viewPrioritiesModal{{ student.id }}">
+                        <i class="fa-solid fa-list"></i> Ver Prioridades
+                    </button>
+                </td>
+            </tr>
+
+            <!-- Modal para actualizar nota -->
+            <div class="modal fade" id="updateMarkModal{{ student.id }}" tabindex="-1" aria-labelledby="updateMarkModalLabel{{ student.id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form method="post" action="{{ path('updateStudentMark', { id: student.id }) }}">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="updateMarkModalLabel{{ student.id }}">Actualizar Nota</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="mark{{ student.id }}" class="form-label">Nueva Nota</label>
+                                    <input type="number" step="0.1" class="form-control" id="mark{{ student.id }}" name="mark" value="{{ student.mark }}">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal para ver prioridades -->
+            <div class="modal fade" id="viewPrioritiesModal{{ student.id }}" tabindex="-1" aria-labelledby="viewPrioritiesModalLabel{{ student.id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="viewPrioritiesModalLabel{{ student.id }}">Prioridades de Proyectos</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <ul class="list-group">
+                                {% for priority in priorities[student.id] %}
+                                    <li class="list-group-item">
+                                        <strong>Prioridad {{ priority.priority }}:</strong> {{ priority.project.name }}
+                                    </li>
+                                {% else %}
+                                    <li class="list-group-item">No hay prioridades asignadas.</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <tr>
+                <td colspan="4">No hay estudiantes asignados a este profesor</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

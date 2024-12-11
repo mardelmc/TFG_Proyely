@@ -10,11 +10,11 @@
             <input type="search" id="subjectName" name="subjectName" class="form-control" value="{{ selectedSubjectName ? selectedSubjectName : '' }}" placeholder="Nombre del módulo">
         </div>
 
-        <button type="button" class="btn btn-primary mt-3" onclick="submitFilterForm()">Buscar</button>
+        <button type="button" class="btn btn-primary mt-3" onclick="submitFilterForm()"><i class="fa-solid fa-magnifying-glass"></i> Buscar</button>
     </form>
 
     <div style="text-align: right">
-        <a href="{{ path('newSubject') }}" class="btn btn-success">Añadir Nuevo Módulo</a>
+        <a href="{{ path('newSubject') }}" class="btn btn-success"><i class="fa-solid fa-plus"></i>  Añadir Nuevo Módulo</a>
     </div>
 
     <table class="table table-bordered table-hover table-striped mt-4">
@@ -31,8 +31,10 @@
                 <td>{{ subject.name }}</td>
                 <td>{{ subject.description | default('Sin descripción') }}</td>
                 <td>
-                    <a href="{{ path('modifySubject', {'id': subject.id}) }}" class="btn btn-info btn-sm">Editar</a>
-                    <a href="{{ path('deleteSubject', {'id': subject.id}) }}" class="btn btn-danger btn-sm">Eliminar</a>
+                    <a href="{{ path('modifySubject', {'id': subject.id}) }}" class="btn btn-info btn-sm"><i class="fa-solid fa-pencil"></i> Editar</a>
+                </td>
+                <td>
+                    <a href="{{ path('deleteSubject', {'id': subject.id}) }}" class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i> Eliminar</a>
                 </td>
             </tr>
         {% else %}

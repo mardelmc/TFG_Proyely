@@ -39,11 +39,11 @@
             </select>
         </div>
 
-        <button type="button" class="btn btn-primary mt-3" onclick="submitFilterForm()">Buscar</button>
+        <button type="button" class="btn btn-primary mt-3" onclick="submitFilterForm()"><i class="fa-solid fa-magnifying-glass"></i> Buscar</button>
     </form>
 
     <div style="text-align: right">
-        <a href="{{ path('newStudent') }}" class="btn btn-success">Añadir Nuevo Alumno</a>
+        <a href="{{ path('newStudent') }}" class="btn btn-success"><i class="fa-solid fa-plus"></i> Añadir Nuevo Alumno</a>
     </div>
 
     <table class="table table-bordered table-hover table-striped mt-4">
@@ -80,8 +80,8 @@
                         Sin roles
                     {% endif %}
                 </td>
-                <td><a href="{{ path('modifyStudent', {'id': student.id}) }}" class="btn btn-info btn-sm">Editar</a></td>
-                <td><a href="{{ path('deleteStudent', {'id': student.id}) }}" class="btn btn-danger btn-sm">Eliminar</a></td>
+                <td><a href="{{ path('modifyStudent', {'id': student.id}) }}" class="btn btn-info btn-sm"><i class="fa-solid fa-pencil"></i> Editar</a></td>
+                <td><a href="{{ path('deleteStudent', {'id': student.id}) }}" class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i> Eliminar</a></td>
             </tr>
         {% else %}
             <tr>

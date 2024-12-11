@@ -22,11 +22,11 @@
             <input type="search" id="groupName" name="groupName" class="form-control" value="{{ selectedGroupName ? selectedGroupName : '' }}" placeholder="Nombre del grupo">
         </div>
 
-        <button type="button" class="btn btn-primary mt-3" onclick="submitFilterForm()">Buscar</button>
+        <button type="button" class="btn btn-primary mt-3" onclick="submitFilterForm()"><i class="fa-solid fa-magnifying-glass"></i>  Buscar</button>
     </form>
 
     <div style="text-align: right">
-        <a href="{{ path('newGroup') }}" class="btn btn-success">Añadir Nuevo Grupo</a>
+        <a href="{{ path('newGroup') }}" class="btn btn-success"><i class="fa-solid fa-plus"></i> Añadir Nuevo Grupo</a>
     </div>
 
     <table class="table table-bordered table-hover table-striped mt-4">
@@ -45,8 +45,10 @@
                 <td>{{ group.description | default('Sin descripción') }}</td>
                 <td>{{ group.academicYear.description | default('Sin año académico') }}</td>
                 <td>
-                    <a href="{{ path('modifyGroup', {'id': group.id}) }}" class="btn btn-info btn-sm">Editar</a>
-                    <a href="{{ path('deleteGroup', {'id': group.id}) }}" class="btn btn-danger btn-sm">Eliminar</a>
+                    <a href="{{ path('modifyGroup', {'id': group.id}) }}" class="btn btn-info btn-sm"><i class="fa-solid fa-pencil"></i> Editar</a>
+                </td>
+                <td>
+                    <a href="{{ path('deleteGroup', {'id': group.id}) }}" class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i>  Eliminar</a>
                 </td>
             </tr>
         {% else %}

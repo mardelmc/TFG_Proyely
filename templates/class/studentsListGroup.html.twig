@@ -7,7 +7,7 @@
             <th>Nombre</th>
             <th>Apellidos</th>
             <th>Nota</th>
-            <th>Acciones</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -18,10 +18,11 @@
                 <td>{{ student.mark ? student.mark : "No Asignada" }}</td>
                 <td>
                     <!-- Botón para actualizar nota -->
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateMarkModal{{ student.id }}">
+                    <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#updateMarkModal{{ student.id }}">
                         <i class="fa-solid fa-pencil"></i> Editar Nota
                     </button>
-
+                </td>
+                <td>
                     <!-- Botón para ver prioridades -->
                     <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#viewPrioritiesModal{{ student.id }}">
                         <i class="fa-solid fa-list"></i> Ver Prioridades
@@ -41,7 +42,8 @@
                             <div class="modal-body">
                                 <div class="mb-3">
                                     <label for="mark{{ student.id }}" class="form-label">Nueva Nota</label>
-                                    <input type="number" step="0.1" class="form-control" id="mark{{ student.id }}" name="mark" value="{{ student.mark }}">
+                                    <input type="number" step="0.1" min="0" max="10" class="form-control" id="mark{{ student.id }}" name="mark" value="{{ student.mark }}" required>
+                                    <small class="form-text text-muted">La nota debe estar entre 0 y 10.</small>
                                 </div>
                             </div>
                             <div class="modal-footer">

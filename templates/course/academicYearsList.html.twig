@@ -10,11 +10,11 @@
             <input type="search" id="description" name="description" class="form-control" value="{{ selectedDescription ? selectedDescription : '' }}" placeholder="Descripción del año escolar">
         </div>
 
-        <button type="button" class="btn btn-primary mt-3" onclick="submitFilterForm()">Buscar</button>
+        <button type="button" class="btn btn-primary mt-3" onclick="submitFilterForm()"><i class="fa-solid fa-magnifying-glass"></i>  Buscar</button>
     </form>
 
     <div style="text-align: right">
-        <a href="{{ path('newAcademicYear') }}" class="btn btn-success">Añadir Nuevo Año Escolar</a>
+        <a href="{{ path('newAcademicYear') }}" class="btn btn-success"><i class="fa-solid fa-plus"></i>  Añadir Nuevo Año Escolar</a>
     </div>
 
     <table class="table table-bordered table-hover table-striped mt-4">
@@ -23,7 +23,7 @@
             <th>Fecha de Inicio</th>
             <th>Fecha de Fin</th>
             <th>Descripción</th>
-            <th>Acciones</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -33,8 +33,10 @@
                 <td>{{ academicYear.endDate|date('Y-m-d') }}</td>
                 <td>{{ academicYear.description }}</td>
                 <td>
-                    <a href="{{ path('modifyAcademicYear', {'id': academicYear.id}) }}" class="btn btn-info btn-sm">Editar</a>
-                    <a href="{{ path('deleteAcademicYear', {'id': academicYear.id}) }}" class="btn btn-danger btn-sm">Eliminar</a>
+                    <a href="{{ path('modifyAcademicYear', {'id': academicYear.id}) }}" class="btn btn-info btn-sm"><i class="fa-solid fa-pencil"></i> Editar</a>
+                </td>
+                <td>
+                    <a href="{{ path('deleteAcademicYear', {'id': academicYear.id}) }}" class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i> Eliminar</a>
                 </td>
             </tr>
         {% else %}

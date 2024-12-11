@@ -84,7 +84,7 @@ class ClassController extends AbstractController
             $projectPriorities[$priority->getProject()->getId()] = $priority->getPriority();
         }
 
-        return $this->render('user/projects.html.twig', [
+        return $this->render('class/studentProject.html.twig', [
             'projects' => $projects,
             'projectPriorities' => $projectPriorities,
         ]);

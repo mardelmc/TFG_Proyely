@@ -64,7 +64,6 @@
                         Sin roles
                     {% endif %}
                 </td>
-                <!--td>{{ dump(teacher) }}</td-->
                 <td><a href="{{ path('modifyTeacher', {'id': teacher.id}) }}" class="btn btn-info btn-sm"><i class="fa-solid fa-pencil"></i> Editar</a></td>
                 <td><a href="{{ path('deleteTeacher', {'id': teacher.id}) }}" class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i> Eliminar</a></td>
             </tr>

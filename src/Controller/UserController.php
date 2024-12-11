@@ -97,9 +97,9 @@ class UserController extends AbstractController
             try {
                 $studentRepository->save();
                 $this->addFlash('success', 'La modificación se ha realizado correctamente');
-                return $this->redirectToRoute('');
+                return $this->redirectToRoute('listStudents');
             }catch (\Exception $e){
-                $this->addFlash('error', 'No se han podido aplicar las modificaciones');
+                $this->addFlash('error', 'No se han podido aplicar las modificaciones. Error:' .  $e->getMessage());
             }
         }
         return $this->render('user/studentModify.html.twig', [

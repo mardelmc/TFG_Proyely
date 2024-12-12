@@ -10,6 +10,7 @@ use App\Repository\StudentRepository;
 use App\Repository\TeacherRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\PaginatorInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,6 +25,7 @@ public function __construct(LoggerInterface $logger)
 {
     $this->logger = $logger;
 }
+    #[IsGranted('ROLE_TEACHER')]
     #[Route('/project', name: 'listProject')]
     public function list(
         Request $request,
@@ -69,7 +71,7 @@ public function __construct(LoggerInterface $logger)
         ]);
     }
 
-
+    #[IsGranted('ROLE_TEACHER')]
     #[Route('/project/new', name: 'newProject')]
     public function new(
         Request $request,
@@ -98,6 +100,8 @@ $this->logger->info('Saving project', ['project' => $project->getProposedBy()->g
             'form' => $form->createView()
         ]);
     }
+
+    #[IsGranted('ROLE_TEACHER')]
     #[Route('/project/delete/{id}', name: 'deleteProject')]
     public function delete(
         Request $request,
@@ -119,6 +123,7 @@ $this->logger->info('Saving project', ['project' => $project->getProposedBy()->g
         ]);
     }
 
+    #[IsGranted('ROLE_TEACHER')]
     #[Route('/project/modify/{id}', name: 'modifyProject')]
     public function update(
         Request $request,

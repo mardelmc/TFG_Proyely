@@ -8,6 +8,7 @@ use App\Repository\ProjectRepository;
 use App\Repository\StudentProjectPriorityRepository;
 use App\Repository\StudentRepository;
 use Psr\Log\LoggerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,6 +21,7 @@ class ClassController extends AbstractController
         $this->logger = $logger;
     }
 
+    #[IsGranted('ROLE_TUTOR')]
     #[Route('/listStudentsGroup', name: 'listStudentsGroup')]
     public function listStudentsGroup(
         GroupRepository $groupRepository,
@@ -51,7 +53,7 @@ class ClassController extends AbstractController
     }
 
 
-
+    #[IsGranted('ROLE_TUTOR')]
     #[Route('/updateStudentMark/{id}', name: 'updateStudentMark', methods: ['POST'])]
     public function updateStudentMark(Request $request, StudentRepository $studentRepository, int $id): Response
     {
@@ -68,7 +70,7 @@ class ClassController extends AbstractController
 
         return $this->redirectToRoute('listStudentsGroup');
     }
-
+    #[IsGranted('ROLE_STUDENT')]
     #[Route('/student/projects', name: 'studentProjects')]
     public function studentProjects(
         ProjectRepository $projectRepository,
@@ -99,7 +101,7 @@ class ClassController extends AbstractController
             'projectPriorities' => $projectPriorities,
         ]);
     }
-
+    #[IsGranted('ROLE_STUDENT')]
     #[Route('/student/projects/prioritize', name: 'prioritizeProjects', methods: ['POST'])]
     public function prioritizeProjects(
         Request $request,
@@ -148,7 +150,7 @@ class ClassController extends AbstractController
         $this->addFlash('success', 'Prioridades guardadas correctamente.');
         return $this->redirectToRoute('studentProjects');
     }
-
+    #[IsGranted('ROLE_TUTOR')]
     #[Route('/assignProjects', name: 'assignProjects', methods: ['POST'])]
     public function assignProjectsToStudents(
         StudentRepository $studentRepository,
@@ -250,7 +252,7 @@ class ClassController extends AbstractController
         return $this->redirectToRoute('listStudentsGroup');
     }
 
-
+    #[IsGranted('ROLE_TUTOR')]
     #[Route('/changeStudentProject/{id}', name: 'changeStudentProject', methods: ['POST'])]
     public function changeStudentProject(
         Request $request,

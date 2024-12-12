@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,7 +21,7 @@ class MainController extends AbstractController
     {
         return $this->render('main/menu.html.twig');
     }
-
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/admin', name: 'admin')]
     final public function admin (): Response
     {

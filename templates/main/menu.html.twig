@@ -6,6 +6,7 @@
     <h1 class="text-center mb-4">Menú Principal</h1>
     <div class="row row-cols-1 row-cols-md-3 g-4">
 
+        {% if is_granted('ROLE_TUTOR') %}
         <!-- Tutoria, vision tutor-->
         <div class="col">
             <a href="{{path('listStudentsGroup')}}" class="text-decoration-none text-dark">
@@ -17,7 +18,9 @@
                 </div>
             </a>
         </div>
+        {% endif %}
 
+        {% if is_granted('ROLE_STUDENT') %}
         <!-- Lista de prioridad, vision estudiante -->
         <div class="col">
             <a href="{{ path('studentProjects') }}" class="text-decoration-none text-dark">
@@ -29,7 +32,9 @@
                 </div>
             </a>
         </div>
+        {% endif %}
 
+        {% if is_granted('ROLE_TEACHER') %}
         <!-- Lista de proyectos -->
         <div class="col">
             <a href="{{path('listProject')}}" class="text-decoration-none text-dark">
@@ -41,8 +46,9 @@
                 </div>
             </a>
         </div>
+        {% endif %}
 
-
+        {% if is_granted('ROLE_ADMIN') %}
         <!--Administración-->
         <div class="col">
             <a href="{{ path('admin') }}" class="text-decoration-none text-dark">
@@ -54,6 +60,7 @@
                 </div>
             </a>
         </div>
+        {% endif %}
 
     </div>
 </div>

@@ -1,53 +1,90 @@
 {% set current_path = app.request.get('_route')|split('_') %}
 <nav class="navbar fixed-top navbar-dark bg-dark bg-mine">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{{ path('menu') }}"><img src="" alt="">Proyely</a>
+        <!-- Branding -->
+        <a class="navbar-brand" href="{{ path('menu') }}">
+            <img src="" alt=""> Proyely
+        </a>
 
+        <!-- Navigation Controls -->
         <div class="d-flex align-items-center">
+            <!-- Back Button -->
             <button class="btn btn-outline-light me-3" onclick="window.history.back();">
                 <i class="fa-solid fa-arrow-left"></i> Atrás
             </button>
+            <!-- User Info -->
             <div class="ms-3 d-flex align-items-center">
                 <i class="fa-solid fa-user-circle fa-2x text-white"></i>
-                <span class="text-white ms-2">{{ app.user ? app.user.nickname : 'Not Found' }} </span>
+                <span class="text-white ms-2">{{ app.user ? app.user.nickname : 'Not Found' }}</span>
             </div>
+            <!-- Offcanvas Toggle -->
             <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">
                 <span class="navbar-toggler-icon"></span>
             </button>
         </div>
+    </div>
 
-        <div class="offcanvas offcanvas-start bg-dark text-white bg-mine" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
-            <div class="offcanvas-header">
-                <h5 class="offcanvas-title" id="offcanvasMenuLabel">Proyely</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-            </div>
-            <div class="offcanvas-body">
-                <ul class="navbar-nav">
+    <!-- Offcanvas Menu -->
+    <div class="offcanvas offcanvas-start bg-dark text-white bg-mine" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
+        <div class="offcanvas-header">
+            <!-- Offcanvas Header -->
+            <h5 class="offcanvas-title" id="offcanvasMenuLabel">Proyely</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <!-- Navigation Links -->
+            <ul class="navbar-nav">
+                <!-- Home Link -->
+                <li class="nav-item">
+                    <a class="nav-link {{ current_path[0] == 'main' ? 'active' : '' }}" href="{{ path('menu') }}">
+                        <i class="fa-solid fa-home"></i> Inicio
+                    </a>
+                </li>
+                <!-- Role-Specific Links -->
+                {% if is_granted('ROLE_TUTOR') %}
                     <li class="nav-item">
-                        <a class="nav-link {{ current_path[0] == 'main' ? 'active' : '' }}" href="{{ path('menu') }}">
-                            <i class="fa-solid fa-home"></i> Inicio
+                        <a class="nav-link" href="{{ path('listStudentsGroup') }}">
+                            <i class="fa-solid fa-chalkboard-teacher"></i> Tutoria
                         </a>
                     </li>
+                {% endif %}
+                {% if is_granted('ROLE_STUDENT') %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('studentProjects') }}">
+                            <i class="fa-solid fa-list-ol"></i> Prioridad
+                        </a>
+                    </li>
+                {% endif %}
+                {% if is_granted('ROLE_TEACHER') %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('listProject') }}">
-                            <i class="fa-solid fa-clipboard"></i> Proyectos
+                            <i class="fa-solid fa-project-diagram"></i> Proyectos
                         </a>
                     </li>
+                {% endif %}
+                {% if is_granted('ROLE_ADMIN') %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('info') }}">
-                            <i class="fa fa-star"></i> Información
+                        <a class="nav-link" href="{{ path('admin') }}">
+                            <i class="fa-solid fa-gears"></i> Admin
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('security_signout') }}">
-                            <i class="fa-solid fa-power-off"></i> Salir
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <div class="container text-center bg-minee border-top border-1 border-secondary">
-                <img src="{{ asset('images/logo.png') }}" alt="Logo" class="img-fluid my-2" style="max-width: 100px;">
-            </div>
+                {% endif %}
+                <!-- Common Links -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('info') }}">
+                        <i class="fa fa-star"></i> Información
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('security_signout') }}">
+                        <i class="fa-solid fa-power-off"></i> Salir
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="container text-center bg-minee border-top border-1 border-secondary">
+            <!-- Logo -->
+            <img src="{{ asset('images/logo.png') }}" alt="Logo" class="img-fluid my-2" style="max-width: 100px;">
         </div>
     </div>
 </nav>

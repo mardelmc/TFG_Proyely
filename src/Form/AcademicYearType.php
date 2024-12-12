@@ -4,6 +4,9 @@ namespace App\Form;
 
 use App\Entity\AcademicYear;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -12,10 +15,24 @@ class AcademicYearType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('startDate')
-            ->add('endDate')
-            ->add('description')
-            ->add('isActive')
+            ->add('startDate', DateType::class, [
+                'widget' => 'single_text',
+                'label' => 'Fecha de inicio',
+                'attr' => ['class' => 'form-control'],
+            ])
+            ->add('endDate', DateType::class, [
+                'widget' => 'single_text',
+                'label' => 'Fecha de fin',
+                'attr' => ['class' => 'form-control'],
+            ])
+            ->add('description', TextType::class, [
+                'label' => 'Descripción',
+                'attr' => ['class' => 'form-control'],
+            ])
+            ->add('isActive', CheckboxType::class, [
+                'label' => '¿Está activo?',
+                'required' => false,
+            ])
         ;
     }
 

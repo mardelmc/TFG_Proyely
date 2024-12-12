@@ -73,7 +73,7 @@ class UserController extends AbstractController
             try {
                 $studentRepository->save($student, true);
                 $this->addFlash('success', 'El alumno ha sido añadido.');
-                return $this->redirectToRoute('listTeachers');
+                return $this->redirectToRoute('listStudents');
             } catch (\Exception $e) {
                 $this->addFlash('error', 'El alumno no se ha guardado. Error: ' . $e->getMessage());
             }

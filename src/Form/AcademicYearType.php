@@ -15,6 +15,7 @@ class AcademicYearType extends AbstractType
             ->add('startDate')
             ->add('endDate')
             ->add('description')
+            ->add('isActive')
         ;
     }
 

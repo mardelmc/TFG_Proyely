@@ -23,6 +23,7 @@
             <th>Fecha de Inicio</th>
             <th>Fecha de Fin</th>
             <th>Descripción</th>
+            <th>Activo</th>
             <th></th>
         </tr>
         </thead>
@@ -32,6 +33,7 @@
                 <td>{{ academicYear.startDate|date('Y-m-d') }}</td>
                 <td>{{ academicYear.endDate|date('Y-m-d') }}</td>
                 <td>{{ academicYear.description }}</td>
+                <td>{{ academicYear.isActive ? "Activo" : "No activo"}}</td>
                 <td>
                     <a href="{{ path('modifyAcademicYear', {'id': academicYear.id}) }}" class="btn btn-info btn-sm"><i class="fa-solid fa-pencil"></i> Editar</a>
                 </td>

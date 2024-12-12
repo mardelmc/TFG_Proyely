@@ -1,13 +1,19 @@
 {% extends 'layout.html.twig' %}
 {% block content %}
     <h1>Estudiantes del grupo</h1>
+    <form method="post" action="{{ path('assignProjects') }}">
+        <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-check"></i> Asignar Proyectos
+        </button>
+    </form>
     <table class="table table-bordered table-hover table-stripped">
         <thead>
         <tr>
             <th>Nombre</th>
             <th>Apellidos</th>
             <th>Nota</th>
-            <th></th>
+            <th>Proyecto Asignado</th>
+            <th>Acciones</th>
         </tr>
         </thead>
         <tbody>
@@ -16,16 +22,16 @@
                 <td>{{ student.firstName }}</td>
                 <td>{{ student.lastName }}</td>
                 <td>{{ student.mark ? student.mark : "No Asignada" }}</td>
+                <td>{{ student.project ? student.project.name : "No Asignado" }}</td>
                 <td>
                     <!-- Botón para actualizar nota -->
                     <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#updateMarkModal{{ student.id }}">
                         <i class="fa-solid fa-pencil"></i> Editar Nota
                     </button>
-                </td>
-                <td>
-                    <!-- Botón para ver prioridades -->
-                    <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#viewPrioritiesModal{{ student.id }}">
-                        <i class="fa-solid fa-list"></i> Ver Prioridades
+
+                    <!-- Botón para cambiar proyecto -->
+                    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#changeProjectModal{{ student.id }}">
+                        <i class="fa-solid fa-exchange-alt"></i> Cambiar Proyecto
                     </button>
                 </td>
             </tr>
@@ -55,34 +61,38 @@
                 </div>
             </div>
 
-            <!-- Modal para ver prioridades -->
-            <div class="modal fade" id="viewPrioritiesModal{{ student.id }}" tabindex="-1" aria-labelledby="viewPrioritiesModalLabel{{ student.id }}" aria-hidden="true">
+            <!-- Modal para cambiar proyecto -->
+            <div class="modal fade" id="changeProjectModal{{ student.id }}" tabindex="-1" aria-labelledby="changeProjectModalLabel{{ student.id }}" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="viewPrioritiesModalLabel{{ student.id }}">Prioridades de Proyectos</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <ul class="list-group">
-                                {% for priority in priorities[student.id] %}
-                                    <li class="list-group-item">
-                                        <strong>Prioridad {{ priority.priority }}:</strong> {{ priority.project.name }}
-                                    </li>
-                                {% else %}
-                                    <li class="list-group-item">No hay prioridades asignadas.</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                        </div>
+                        <form method="post" action="{{ path('changeStudentProject', { id: student.id }) }}">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="changeProjectModalLabel{{ student.id }}">Cambiar Proyecto</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="project{{ student.id }}" class="form-label">Seleccionar Proyecto</label>
+                                    <select class="form-control" id="project{{ student.id }}" name="projectId" required>
+                                        {% for project in groupProjects[student.group.id] %}
+                                            <option value="{{ project.id }}" {% if student.project and student.project.id == project.id %}selected{% endif %}>
+                                                {{ project.name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         {% else %}
             <tr>
-                <td colspan="4">No hay estudiantes asignados a este profesor</td>
+                <td colspan="5">No hay estudiantes asignados a este profesor</td>
             </tr>
         {% endfor %}
         </tbody>

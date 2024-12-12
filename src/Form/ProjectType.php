@@ -29,6 +29,7 @@ class ProjectType extends AbstractType
         $builder
             ->add('name')
             ->add('description')
+            ->add('group')
             ->add('subjects', EntityType::class, [
                 'class' => Subject::class,
                 'choice_label' => 'name', // Muestra el nombre del Subject

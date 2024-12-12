@@ -22,7 +22,7 @@ class Student extends User
     #[ORM\JoinColumn(nullable: false)]
     private ?Group $group = null;
 
-    #[ORM\OneToOne(mappedBy: 'student', targetEntity: Project::class)]
+    #[ORM\OneToOne(mappedBy: 'student', targetEntity: Project::class, cascade: ['persist'])]
     private ?Project $project = null;
 
     #[ORM\ManyToMany(targetEntity: Subject::class, mappedBy: 'students')]
@@ -77,6 +77,12 @@ class Student extends User
 
     public function setProject(?Project $project): self {
         $this->project = $project;
+
+        // Sincronizar el lado inverso
+        if ($project && $project->getStudent() !== $this) {
+            $project->setStudent($this);
+        }
+
         return $this;
     }
 
@@ -101,7 +107,7 @@ class Student extends User
 
     public function __toString(): string
     {
-        return $this->getId() . ' ' . $this->firstName . ' ' . $this->lastName . ' ' . $this->mark;
+        return $this->getId() . ' ' . $this->firstName . ' ' . $this->lastName . ' ' . $this->mark . ' ' . $this->project->getName();
     }
 
 }

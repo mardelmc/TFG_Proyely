@@ -22,7 +22,7 @@
     <script>
         // Inicializamos Sortable.js en la lista con el ID `sortableList`
         const sortable = new Sortable(document.getElementById('sortableList'), {
-            animation: 150, // Animación suave al mover los elementos
+            animation: 150,
             onEnd: function () {
                 updateOrder(); // Actualiza el orden después de cada acción de arrastrar y soltar
             }
@@ -51,7 +51,7 @@
         document.getElementById('priorityForm').addEventListener('submit', function (event) {
             // Asegúrate de que el orden esté actualizado
             updateOrder();
-            console.log('Formulario enviado con prioridades:', document.getElementById('orderedProjectIds').value); // Depuración
+            console.log('Formulario enviado con prioridades:', document.getElementById('orderedProjectIds').value);
         });
 
         // Actualiza el orden inicial cuando la página se carga

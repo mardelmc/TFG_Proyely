@@ -25,7 +25,7 @@ class Project
     private ?Student $student = null;
 
     #[ORM\ManyToOne(targetEntity: Teacher::class, inversedBy: 'projects')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Teacher $proposedBy = null;
 
     #[ORM\ManyToMany(targetEntity: Subject::class, mappedBy: 'projects')]
@@ -69,8 +69,15 @@ class Project
 
     public function setStudent(?Student $student): self {
         $this->student = $student;
+
+        // Sincronizar el lado inverso
+        if ($student && $student->getProject() !== $this) {
+            $student->setProject($this);
+        }
+
         return $this;
     }
+
 
     public function getProposedBy(): ?Teacher
     {

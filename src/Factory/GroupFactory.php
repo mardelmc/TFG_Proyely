@@ -29,21 +29,11 @@ use Zenstruck\Foundry\RepositoryProxy;
  */
 final class GroupFactory extends ModelFactory
 {
-    /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
-     *
-     * @todo inject services if required
-     */
     public function __construct()
     {
         parent::__construct();
     }
 
-    /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
-     *
-     * @todo add your default values here
-     */
     protected function getDefaults(): array
     {
         $gradosSuperiores = [
@@ -70,15 +60,15 @@ final class GroupFactory extends ModelFactory
         ];
     }
 
-    /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
-     */
     protected function initialize(): self
     {
         return $this->afterInstantiate(function (Group $group): void {
             // Crear un tutor para el grupo
             $tutor = TeacherFactory::new()->create();
             $group->addTutor($tutor->object());
+
+            // Asignar el rol de tutor al profesor
+            $tutor->addRole('ROLE_TUTOR');
 
             // Crear dos subjects para el grupo
             $subject1 = SubjectFactory::createOne();

@@ -206,47 +206,63 @@ class UserController extends AbstractController
     }
 
     #[Route('/listTeachers/modify/{id}', name: 'modifyTeacher')]
-    final public function modifyTeacher (
+    final public function modifyTeacher(
         Request $request,
         TeacherRepository $teacherRepository,
         GroupRepository $groupRepository,
         Teacher $teacher,
-    ): Response
-    {
-        $this->logger->info('Updating Teacher',[$request->request->all()]);
+    ): Response {
+        $this->logger->info('Updating Teacher', [$request->request->all()]);
 
         $originalGroups = new ArrayCollection($teacher->getGroups()->toArray());
         $form = $this->createForm(TeacherType::class, $teacher);
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $newGroups = $teacher->getGroups();
 
+                // Eliminar el docente como tutor de los grupos que ya no tiene
                 foreach ($originalGroups as $originalGroup) {
                     if (!$newGroups->contains($originalGroup)) {
                         $originalGroup->removeTutor($teacher);
-                        $groupRepository->save();
+                        $groupRepository->save($originalGroup);
                     }
                 }
 
-                foreach ($teacher->getGroups() as $group) {
-                    $group->addTutor($teacher);
-                    $groupRepository->save();
+                // Agregar el docente como tutor de los nuevos grupos
+                foreach ($newGroups as $group) {
+                    if (!$originalGroups->contains($group)) {
+                        $group->addTutor($teacher);
+                        $groupRepository->save($group);
+                    }
                 }
 
-                $teacherRepository->save();
+                // Verificar si el docente es tutor y actualizar roles
+                if ($teacher->isTutor()) {
+                    $teacher->addRole('ROLE_TUTOR');
+                } else {
+                    $teacher->setRoles(array_filter(
+                        $teacher->getRoles(),
+                        fn($role) => $role !== 'ROLE_TUTOR'
+                    ));
+                }
+
+                // Guardar cambios en el docente
+                $teacherRepository->save($teacher);
+
                 $this->addFlash('success', 'La modificación se ha realizado correctamente');
-
-
                 return $this->redirectToRoute('listTeachers');
-            }catch (\Exception $e){
-                $this->addFlash('error', 'No se han podido aplicar las modificaciones');
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'No se han podido aplicar las modificaciones. Error: ' . $e->getMessage());
             }
         }
+
         return $this->render('user/teacherModify.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
+
 
     #[Route('/listTeachers/delete/{id}', name: 'deleteTeacher')]
     final public function deleteTeacher(
@@ -257,6 +273,12 @@ class UserController extends AbstractController
     {
         if ($request->request->has('confirmar')) {
             try{
+                foreach ($teacher->getGroups() as $group) {
+                    $group->removeTutor($teacher);
+                }
+                foreach ($teacher->getProjects() as $project) {
+                    $project->setProposedBy(null);
+                }
                 $teacherRepository->remove($teacher);
                 $teacherRepository->save();
                 $this->addFlash('success', 'El profesor ha sido eliminado con éxito');

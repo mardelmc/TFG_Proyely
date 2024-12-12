@@ -64,14 +64,10 @@ final class TeacherFactory extends ModelFactory
      */
     protected function initialize(): self
     {
-//        return $this->afterInstantiate(function(Teacher $teacher): void {
-//            if ($teacher->isTutor()) {
-//                foreach ($teacher->getGroups() as $group) {
-//                    $group->addTutor($teacher);
-//                }
-//            }
-//        });
-        return $this;
+        return $this->afterInstantiate(function (Teacher $teacher): void {
+            // Añadir el rol ROLE_TEACHER a todos los profesores
+            $teacher->addRole('ROLE_TEACHER');
+        });
     }
 
     protected static function getClass(): string

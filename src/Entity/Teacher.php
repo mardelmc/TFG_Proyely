@@ -20,7 +20,7 @@ class Teacher extends User
     #[ORM\OneToMany(mappedBy: 'proposedBy', targetEntity: Project::class)]
     private Collection $projects;
 
-    #[ORM\ManyToMany(targetEntity: Group::class, mappedBy: 'tutors', cascade: ['persist', 'remove'])]
+    #[ORM\ManyToMany(targetEntity: Group::class, mappedBy: 'tutors', cascade: ['persist'])]
     private Collection $groups;
 
     public function __construct() {

@@ -31,6 +31,16 @@ class AcademicYear
     #[ORM\Column(type: Types::BOOLEAN)]
     private ?bool $isActive = false;
 
+    public function getIsActive(): ?bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(?bool $isActive): void
+    {
+        $this->isActive = $isActive;
+    }
+
     public function __construct() {
         $this->groups = new ArrayCollection();
     }

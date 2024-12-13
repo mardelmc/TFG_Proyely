@@ -68,12 +68,16 @@ class UserController extends AbstractController
         $this->logger->info('Saving Student',[$request->request->all()]);
         $student = new Student();
         $form = $this->createForm(StudentType::class, $student);
+        $this->logger->info('Saving Student',[$request->request->all()]);
+        $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $this->logger->info('Submited form',[$request->request->all()]);
             $student->addRole('ROLE_USER');
 
             try {
-                $studentRepository->save($student, true);
+                $studentRepository->add($student);
+                $studentRepository->save();
                 $this->addFlash('success', 'El alumno ha sido añadido.');
                 return $this->redirectToRoute('listStudents');
             } catch (\Exception $e) {

@@ -94,6 +94,11 @@ class Project
         return $this->subjects;
     }
 
+    public function setSubjects($subjects): Collection {
+        $this->subjects = new ArrayCollection($subjects);
+        return $this->subjects;
+    }
+
     public function addSubject(Subject $subject): self {
         if (!$this->subjects->contains($subject)) {
             $this->subjects[] = $subject;

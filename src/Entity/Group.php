@@ -112,6 +112,11 @@ class Group
         return $this->subjects;
     }
 
+    public function setSubjects(Collection $subjects): void
+    {
+        $this->subjects = $subjects;
+    }
+
     public function addSubject(Subject $subject): self {
         if (!$this->subjects->contains($subject)) {
             $this->subjects[] = $subject;

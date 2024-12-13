@@ -55,9 +55,9 @@ final class StudentFactory extends ModelFactory
         return [
             'nickname' => self::faker()->unique()->userName(),
             'password' => $hashedPassword,
-            'firstName' => self::faker()->name(),
-            'group' => GroupFactory::new(),
+            'firstName' => self::faker()->firstName(),
             'lastName' => self::faker()->lastName(),
+            'group' => GroupFactory::new(),
         ];
     }
 

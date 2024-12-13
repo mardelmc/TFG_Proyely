@@ -18,16 +18,6 @@
         </div>
 
         <div class="form-group">
-            <label for="studentName">Buscar por Nombre:</label>
-            <input type="search" id="studentName" name="studentName" class="form-control" value="{{ selectedStudent ? selectedStudent : '' }}" placeholder="Nombre del alumno" list="studentList">
-            <datalist id="studentList">
-                {% for student in pagination.items %}
-                    <option value="{{ student.firstName }} {{ student.lastName }}"></option>
-                {% endfor %}
-            </datalist>
-        </div>
-
-        <div class="form-group">
             <label for="group">Filtrar por Grupo:</label>
             <select id="group" name="group" class="form-control">
                 <option value="" {% if selectedGroup is empty %}selected{% endif %}>Todos los Grupos</option>
@@ -39,6 +29,15 @@
             </select>
         </div>
 
+        <div class="form-group">
+            <label for="studentName">Buscar por Nombre:</label>
+            <input type="search" id="studentName" name="studentName" class="form-control" value="{{ selectedStudent ? selectedStudent : '' }}" placeholder="Nombre del alumno" list="studentList">
+            <datalist id="studentList">
+                {% for student in pagination.items %}
+                    <option value="{{ student.firstName }} {{ student.lastName }}"></option>
+                {% endfor %}
+            </datalist>
+        </div>
         <button type="button" class="btn btn-primary mt-3" onclick="submitFilterForm()"><i class="fa-solid fa-magnifying-glass"></i> Buscar</button>
     </form>
 

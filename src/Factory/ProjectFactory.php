@@ -59,9 +59,13 @@ final class ProjectFactory extends ModelFactory
      */
     protected function initialize(): self
     {
-        return $this
-            // ->afterInstantiate(function(Project $project): void {})
-        ;
+        return $this->afterInstantiate(function(Project $project, array $attributes): void {
+            if (isset($attributes['subjects'])) {
+                foreach ($attributes['subjects'] as $subject) {
+                    $project->addSubject($subject instanceof Proxy ? $subject->object() : $subject);
+                }
+            }
+        });
     }
 
     protected static function getClass(): string

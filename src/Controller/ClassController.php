@@ -275,23 +275,36 @@ class ClassController extends AbstractController
         }
 
         $projectId = $request->request->get('projectId');
-        $newProject = $projectRepository->find($projectId);
 
-        if (!$newProject) {
-            $this->addFlash('error', 'El proyecto seleccionado no existe.');
-            return $this->redirectToRoute('listStudentsGroup');
+        if (!$projectId) {
+            // Si no se selecciona ningún proyecto, se desasigna el proyecto actual
+            $currentProject = $student->getProject();
+            if ($currentProject) {
+                $currentProject->setStudent(null);
+            }
+            $student->setProject(null);
+            $this->addFlash('success', 'Proyecto desasignado correctamente.');
+        } else {
+            $newProject = $projectRepository->find($projectId);
+
+            if (!$newProject) {
+                $this->addFlash('error', 'El proyecto seleccionado no existe.');
+                return $this->redirectToRoute('listStudentsGroup');
+            }
+
+            $currentProject = $student->getProject();
+            $currentProject?->setStudent(null);
+
+            $student->setProject($newProject);
+            $newProject->setStudent($student);
+
+            $this->addFlash('success', 'Proyecto actualizado correctamente.');
         }
-
-        $currentProject = $student->getProject();
-        $currentProject?->setStudent(null);
-
-        $student->setProject($newProject);
-        $newProject->setStudent($student);
 
         $studentRepository->save();
 
-        $this->addFlash('success', 'Proyecto actualizado correctamente.');
         return $this->redirectToRoute('listStudentsGroup');
     }
+
 
 }

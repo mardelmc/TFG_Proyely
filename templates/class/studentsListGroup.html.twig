@@ -75,7 +75,8 @@
                             <div class="modal-body">
                                 <div class="mb-3">
                                     <label for="project{{ student.id }}" class="form-label">Seleccionar Proyecto</label>
-                                    <select class="form-control" id="project{{ student.id }}" name="projectId" required>
+                                    <select class="form-control" id="project{{ student.id }}" name="projectId">
+                                        <option value="">Sin Proyecto</option>
                                         {% for project in groupProjects[student.group.id] %}
                                             <option value="{{ project.id }}" {% if student.project and student.project.id == project.id %}selected{% endif %}>
                                                 {{ project.name }}

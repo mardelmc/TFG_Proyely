@@ -1,68 +1,69 @@
 {% extends 'layout.html.twig' %}
 
-{% block title %}Menu{{ parent() }}{% endblock %}
+{% block title %}Menú Principal{{ parent() }}{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
-    <h1 class="text-center mb-4">Menú Principal</h1>
-    <div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="container mt-5">
+        <h1 class="text-center mb-5">Menú Principal</h1>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
 
-        {% if is_granted('ROLE_TUTOR') %}
-        <!-- Tutoria, vision tutor-->
-        <div class="col">
-            <a href="{{path('listStudentsGroup')}}" class="text-decoration-none text-dark">
-                <div class="card text-center shadow-sm">
-                    <div class="card-body">
-                        <i class="fas fa-chalkboard-teacher fa-3x mb-3"></i>
-                        <h5 class="card-title">Tutoria</h5>
-                    </div>
+            {% if is_granted('ROLE_TUTOR') %}
+                <!-- Tutoria, visión tutor -->
+                <div class="col">
+                    <a href="{{ path('listStudentsGroup') }}" class="text-decoration-none text-dark">
+                        <div class="card text-center shadow-sm h-100">
+                            <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                                <i class="fas fa-chalkboard-teacher fa-3x mb-3" aria-hidden="true"></i>
+                                <h5 class="card-title">Tutoria</h5>
+                            </div>
+                        </div>
+                    </a>
                 </div>
-            </a>
-        </div>
-        {% endif %}
+            {% endif %}
 
-        {% if is_granted('ROLE_STUDENT') %}
-        <!-- Lista de prioridad, vision estudiante -->
-        <div class="col">
-            <a href="{{ path('studentProjects') }}" class="text-decoration-none text-dark">
-                <div class="card text-center shadow-sm">
-                    <div class="card-body">
-                        <i class="fas fa-list-ol fa-3x mb-3"></i>
-                        <h5 class="card-title">Lista de Prioridad</h5>
-                    </div>
+            {% if is_granted('ROLE_STUDENT') %}
+                <!-- Lista de prioridad, visión estudiante -->
+                <div class="col">
+                    <a href="{{ path('studentProjects') }}" class="text-decoration-none text-dark">
+                        <div class="card text-center shadow-sm h-100">
+                            <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                                <i class="fas fa-list-ol fa-3x mb-3" aria-hidden="true"></i>
+                                <h5 class="card-title">Lista de Prioridad</h5>
+                            </div>
+                        </div>
+                    </a>
                 </div>
-            </a>
-        </div>
-        {% endif %}
+            {% endif %}
 
-        {% if is_granted('ROLE_TEACHER') %}
-        <!-- Lista de proyectos -->
-        <div class="col">
-            <a href="{{path('listProject')}}" class="text-decoration-none text-dark">
-                <div class="card text-center shadow-sm">
-                    <div class="card-body">
-                        <i class="fas fa-project-diagram fa-3x mb-3"></i>
-                        <h5 class="card-title">Lista de Proyectos</h5>
-                    </div>
+            {% if is_granted('ROLE_TEACHER') %}
+                <!-- Lista de proyectos -->
+                <div class="col">
+                    <a href="{{ path('listProject') }}" class="text-decoration-none text-dark">
+                        <div class="card text-center shadow-sm h-100">
+                            <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                                <i class="fas fa-project-diagram fa-3x mb-3" aria-hidden="true"></i>
+                                <h5 class="card-title">Lista de Proyectos</h5>
+                            </div>
+                        </div>
+                    </a>
                 </div>
-            </a>
-        </div>
-        {% endif %}
+            {% endif %}
 
-        {% if is_granted('ROLE_ADMIN') %}
-        <!--Administración-->
-        <div class="col">
-            <a href="{{ path('admin') }}" class="text-decoration-none text-dark">
-                <div class="card text-center shadow-sm">
-                    <div class="card-body">
-                        <i class="fas fa-gears fa-3x mb-3"></i>
-                        <h5 class="card-title">Administración</h5>
-                    </div>
+            {% if is_granted('ROLE_ADMIN') %}
+                <!-- Administración -->
+                <div class="col">
+                    <a href="{{ path('admin') }}" class="text-decoration-none text-dark">
+                        <div class="card text-center shadow-sm h-100">
+                            <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                                <i class="fas fa-gears fa-3x mb-3" aria-hidden="true"></i>
+                                <h5 class="card-title">Administración</h5>
+                            </div>
+                        </div>
+                    </a>
                 </div>
-            </a>
-        </div>
-        {% endif %}
+            {% endif %}
 
+        </div>
     </div>
-</div>
 
 {% endblock %}

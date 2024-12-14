@@ -2,10 +2,18 @@
     background-color: #0E2B36!important;
 }
 
+.card:hover, .col:hover {
+    transform: scale(1.05)!important;
+    transition: transform 0.2s ease-in-out!important;
+}
 .card .card-body i {
     color: #1B3D47;
 }
 
 .card-body, .bg-minee{
     background-color: #F5FAFE;
+}
+
+body{
+    margin-top: 3.5%;
 }

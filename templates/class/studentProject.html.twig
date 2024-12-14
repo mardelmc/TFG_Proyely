@@ -7,6 +7,9 @@
         <ul id="sortableList" class="list-group">
             {% for project in projects %}
                 <li class="list-group-item" data-project-id="{{ project.id }}">
+                    {% if projectPriorities[project.id] is defined %}
+                        <span class="badge bg-primary me-2">{{ projectPriorities[project.id] }}</span>
+                    {% endif %}
                     <strong>{{ project.name }}</strong> - {{ project.description }}
                 </li>
             {% else %}
@@ -28,11 +31,6 @@
             }
         });
 
-        /**
-         * Función para actualizar el campo oculto con el orden actual de los proyectos.
-         * Recorre los elementos de la lista y obtiene el atributo `data-project-id`
-         * de cada uno para crear un array que representa el orden actual.
-         */
         function updateOrder() {
             // Selecciona todos los elementos dentro de la lista con `list-group-item`
             const orderedIds = Array.from(document.querySelectorAll('#sortableList .list-group-item'))
@@ -41,21 +39,22 @@
             // Actualiza el valor del campo oculto con el array convertido a JSON
             document.getElementById('orderedProjectIds').value = JSON.stringify(orderedIds);
 
+            // Actualiza las etiquetas de número de prioridad
+            document.querySelectorAll('#sortableList .list-group-item').forEach((item, index) => {
+                const badge = item.querySelector('.badge');
+                if (badge) {
+                    badge.textContent = index + 1; // Actualiza el número
+                }
+            });
+
             console.log('Orden actualizado:', orderedIds); // Depuración: imprime el orden en la consola
         }
 
-        /**
-         * Al enviar el formulario, verifica que el campo oculto tenga el valor correcto.
-         * Actualiza el orden justo antes de enviar, para garantizar que esté sincronizado.
-         */
         document.getElementById('priorityForm').addEventListener('submit', function (event) {
-            // Asegúrate de que el orden esté actualizado
             updateOrder();
             console.log('Formulario enviado con prioridades:', document.getElementById('orderedProjectIds').value);
         });
 
-        // Actualiza el orden inicial cuando la página se carga
-        updateOrder();
+        updateOrder(); // Actualiza el orden inicial cuando la página se carga
     </script>
-
 {% endblock %}

@@ -70,25 +70,25 @@ class ClassController extends AbstractController
 
         return $this->redirectToRoute('listStudentsGroup');
     }
+
     #[IsGranted('ROLE_STUDENT')]
-    #[Route('/student/projects', name: 'studentProjects')]
+    #[Route('/studentProjectsPrioritize', name: 'studentProjects')]
     public function studentProjects(
         ProjectRepository $projectRepository,
         StudentProjectPriorityRepository $priorityRepository
     ): Response {
         $user = $this->getUser();
 
-        if (!$user || !in_array('ROLE_STUDENT', $user->getRoles())) {
-            throw $this->createAccessDeniedException('No tienes acceso a esta página.');
+        $projects = [];
+        if (!in_array('ROLE_ADMIN', $user->getRoles())) {
+            $group = $user->getGroup();
+            if (!$group) {
+                throw $this->createNotFoundException('No tienes un grupo asignado.');
+            }
+
+            $projects = $projectRepository->findBy(['group' => $group]);
         }
 
-        $group = $user->getGroup();
-
-        if (!$group) {
-            throw $this->createNotFoundException('No tienes un grupo asignado.');
-        }
-
-        $projects = $projectRepository->findBy(['group' => $group]);
         $priorities = $priorityRepository->findBy(['student' => $user]);
 
         $projectPriorities = [];
@@ -96,11 +96,20 @@ class ClassController extends AbstractController
             $projectPriorities[$priority->getProject()->getId()] = $priority->getPriority();
         }
 
+        // Ordenar proyectos por prioridad si existe, los demás al final
+        usort($projects, function ($a, $b) use ($projectPriorities) {
+            $priorityA = $projectPriorities[$a->getId()] ?? PHP_INT_MAX;
+            $priorityB = $projectPriorities[$b->getId()] ?? PHP_INT_MAX;
+            return $priorityA <=> $priorityB;
+        });
+
         return $this->render('class/studentProject.html.twig', [
             'projects' => $projects,
             'projectPriorities' => $projectPriorities,
         ]);
     }
+
+
     #[IsGranted('ROLE_STUDENT')]
     #[Route('/student/projects/prioritize', name: 'prioritizeProjects', methods: ['POST'])]
     public function prioritizeProjects(

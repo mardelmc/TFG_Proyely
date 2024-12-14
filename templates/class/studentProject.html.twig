@@ -23,7 +23,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <script>
-        // Inicializamos Sortable.js en la lista con el ID `sortableList`
         const sortable = new Sortable(document.getElementById('sortableList'), {
             animation: 150,
             onEnd: function () {
@@ -32,7 +31,7 @@
         });
 
         function updateOrder() {
-            // Selecciona todos los elementos dentro de la lista con `list-group-item`
+            // Selecciona todos los elementos dentro de la lista
             const orderedIds = Array.from(document.querySelectorAll('#sortableList .list-group-item'))
                 .map(item => item.dataset.projectId); // Extrae el valor de `data-project-id`
 
@@ -47,7 +46,6 @@
                 }
             });
 
-            console.log('Orden actualizado:', orderedIds); // Depuración: imprime el orden en la consola
         }
 
         document.getElementById('priorityForm').addEventListener('submit', function (event) {

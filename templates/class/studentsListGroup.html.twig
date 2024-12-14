@@ -24,13 +24,11 @@
                 <td>{{ student.mark ? student.mark : "No Asignada" }}</td>
                 <td>{{ student.project ? student.project.name : "No Asignado" }}</td>
                 <td>
-                    <!-- Botón para actualizar nota -->
                     <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#updateMarkModal{{ student.id }}">
                         <i class="fa-solid fa-pencil"></i> Editar Nota
                     </button>
                 </td>
                 <td>
-                    <!-- Botón para cambiar proyecto -->
                     <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#changeProjectModal{{ student.id }}">
                         <i class="fa-solid fa-exchange-alt"></i> Cambiar Proyecto
                     </button>
@@ -78,8 +76,9 @@
                                     <select class="form-control" id="project{{ student.id }}" name="projectId">
                                         <option value="">Sin Proyecto</option>
                                         {% for project in groupProjects[student.group.id] %}
+                                            {% set priority = (priorities[student.id] | filter(p => p.project.id == project.id) | first).priority %}
                                             <option value="{{ project.id }}" {% if student.project and student.project.id == project.id %}selected{% endif %}>
-                                                {{ project.name }}
+                                                {% if priority is not null %} {{ priority }}{% endif %} {{ project.name }}
                                             </option>
                                         {% endfor %}
                                     </select>

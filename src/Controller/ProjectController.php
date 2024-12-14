@@ -35,21 +35,25 @@ public function __construct(LoggerInterface $logger)
         GroupRepository $groupRepository,
         PaginatorInterface $paginator
     ): Response {
-        // Obtener todos los proyectos, estudiantes y grupos
+        // Obtener todos los proyectos, profesores y grupos
         $projects = $projectRepository->findAll();
-        $students = $studentRepository->findAll();
+        $teachers = $teacherRepository->findAll();
         $groups = $groupRepository->findAll();
 
         // Recibir los filtros desde la solicitud
         $selectedGroup = $request->query->get('group');
-        $selectedStudent = $request->query->get('student');
+        $selectedTeacher = $request->query->get('teacher');
+        $isAssigned = $request->query->get('isAssigned');
 
         // Filtrar los proyectos según los filtros seleccionados
-        $filteredProjects = array_filter($projects, function($project) use ($selectedGroup, $selectedStudent) {
+        $filteredProjects = array_filter($projects, function($project) use ($selectedGroup, $selectedTeacher, $isAssigned) {
             if ($selectedGroup && (!$project->getStudent() || $project->getStudent()->getGroup()->getId() != $selectedGroup)) {
                 return false;
             }
-            if ($selectedStudent && $project->getStudent() && stripos($project->getStudent()->getFirstName() . ' ' . $project->getStudent()->getLastName(), $selectedStudent) === false) {
+            if ($selectedTeacher && (!$project->getProposedBy() || stripos($project->getProposedBy()->getFirstName() . ' ' . $project->getProposedBy()->getLastName(), $selectedTeacher) === false)) {
+                return false;
+            }
+            if ($isAssigned !== null && (($isAssigned == 1 && !$project->getStudent()) || ($isAssigned == 0 && $project->getStudent()))) {
                 return false;
             }
             return true;
@@ -64,12 +68,14 @@ public function __construct(LoggerInterface $logger)
 
         return $this->render('project/list.html.twig', [
             'pagination' => $pagination,
-            'students' => $students,
+            'teachers' => $teachers,
             'groups' => $groups,
             'selectedGroup' => $selectedGroup,
-            'selectedStudent' => $selectedStudent,
+            'selectedTeacher' => $selectedTeacher,
+            'isAssigned' => $isAssigned,
         ]);
     }
+
 
     #[IsGranted('ROLE_TEACHER')]
     #[Route('/project/new', name: 'newProject')]
@@ -135,7 +141,7 @@ $this->logger->info('Saving project', ['project' => $project->getProposedBy()->g
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $this->logger->info('Updating project', ['project' => $project->getName()]);
+$this->logger->info('Updating project', ['project' => $project->getName()]);
                 $projectRepository->save();
                 $this->addFlash('success', 'The project has been updated successfully');
                 return $this->redirectToRoute('listProject');

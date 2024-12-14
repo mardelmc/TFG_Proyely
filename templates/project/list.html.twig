@@ -16,19 +16,26 @@
                 {% endfor %}
             </select>
         </div>
-
         <div class="form-group">
-            <label for="student">Buscar por Estudiante:</label>
-            <input type="text" id="student" name="student" class="form-control" value="{{ selectedStudent ? selectedStudent : '' }}" placeholder="Nombre del estudiante" list="studentList">
-            <datalist id="studentList">
-                {% for student in students %}
-                    <option value="{{ student.firstName }} {{ student.lastName }}"></option>
+            <label for="isAssigned">Filtrar por Asignación:</label>
+            <select id="isAssigned" name="isAssigned" class="form-control">
+                <option value="" {% if isAssigned is empty %}selected{% endif %}>Todos</option>
+                <option value="1" {% if isAssigned == '1' %}selected{% endif %}>Asignados</option>
+                <option value="0" {% if isAssigned == '0' %}selected{% endif %}>No Asignados</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="teacher">Buscar por Profesor:</label>
+            <input type="text" id="teacher" name="teacher" class="form-control" value="{{ selectedTeacher ? selectedTeacher : '' }}" placeholder="Nombre del profesor" list="teacherList">
+            <datalist id="teacherList">
+                {% for teacher in teachers %}
+                    <option value="{{ teacher.firstName }} {{ teacher.lastName }}"></option>
                 {% endfor %}
             </datalist>
         </div>
-
         <button type="button" class="btn btn-primary mt-3" onclick="submitFilterForm()"><i class="fa-solid fa-magnifying-glass"></i>  Buscar</button>
     </form>
+
 
     <div style="text-align: right">
         <a href="{{ path('newProject') }}" class="btn btn-success"><i class="fa-solid fa-plus"></i>  Crear Nuevo Proyecto</a>
@@ -106,14 +113,18 @@
     <script>
         function submitFilterForm() {
             const form = document.getElementById('filterForm');
-            const studentInput = document.getElementById('student');
+            const teacherInput = document.getElementById('teacher');
             const groupSelect = document.getElementById('group');
+            const isAssignedSelect = document.getElementById('isAssigned');
 
-            if (studentInput.value === '') {
-                studentInput.name = '';
+            if (teacherInput.value === '') {
+                teacherInput.name = '';
             }
             if (groupSelect.value === '') {
                 groupSelect.name = '';
+            }
+            if (isAssignedSelect.value === '') {
+                isAssignedSelect.name = '';
             }
 
             form.submit();

@@ -56,8 +56,8 @@ class AppFixtures extends Fixture
 
         // Crear un grupo manualmente
         $group = new Group();
-        $group->setName('2º F.P.G.S. (Desarrollo de Aplicaciones Web)');
-        $group->setDescription('2º DAW');
+        $group->setName('2º DAW');
+        $group->setDescription('2º F.P.G.S. (Desarrollo de Aplicaciones Web)');
         $group->setAcademicYear($demoAcademicYear->object());
         $group->addTutor($demoTeacher->object());
         $group->setSubjects(new ArrayCollection(array_map(fn($subject) => $subject->object(), $demoSubjects)));

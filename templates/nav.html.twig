@@ -15,7 +15,7 @@
             <!-- User Info -->
             <div class="ms-3 d-flex align-items-center">
                 <i class="fa-solid fa-user-circle fa-2x text-white"></i>
-                <span class="text-white ms-2">{{ app.user ? app.user.nickname : 'Not Found' }}</span>
+                <span class="text-white ms-2"><a class="link-light link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="{{ path('profile') }}">{{ app.user ? app.user : 'Not Found' }}</a></span>
             </div>
             <!-- Offcanvas Toggle -->
             <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">

@@ -1,0 +1,83 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Perfil de Usuario{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="bg-mine text-white p-4 rounded-top">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="h4 mb-0">
+                    <i class="fas fa-user-circle"></i> Perfil de Usuario
+                </h1>
+                <div>
+                    <button type="button" class="btn btn-warning me-2" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                        <i class="fas fa-key"></i> Cambiar contraseña
+                    </button>
+                    <a href="{{ path('security_signout') }}" class="btn btn-danger">
+                        <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="border border-mine rounded-bottom p-4 bg-light">
+            <p><strong><i class="fas fa-user"></i> Nombre completo:</strong> {{ user }}</p>
+            <p><strong><i class="fas fa-user-tag"></i> Nombre de usuario:</strong> {{ user.nickname }}</p>
+            {% set roleNames = {
+                'ROLE_ADMIN': 'Administrador',
+                'ROLE_TUTOR': 'Tutor',
+                'ROLE_TEACHER': 'Profesor',
+                'ROLE_STUDENT': 'Estudiante',
+                'ROLE_USER': 'Usuario'
+
+            } %}
+            <p><strong><i class="fas fa-sitemap"></i> Rol:</strong>
+                {% for role in user.roles %}
+                    {{ roleNames[role] ?? role }}{% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </p>
+        </div>
+    </div>
+
+    {# Modal para cambiar contraseña #}
+    <div class="modal fade {% if changePasswordForm.vars.errors|length > 0 %}show{% endif %}" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="{% if changePasswordForm.vars.errors|length > 0 %}false{% else %}true{% endif %}" style="{% if changePasswordForm.vars.errors|length > 0 %}display: block;{% endif %}">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title" id="changePasswordModalLabel">
+                        <i class="fas fa-key"></i> Cambiar contraseña
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{ form_start(changePasswordForm) }}
+
+                    {# Campo: Nueva contraseña #}
+                    <div class="mb-3">
+                        {{ form_label(changePasswordForm.plainPassword.first, 'Nueva contraseña:', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(changePasswordForm.plainPassword.first, {'attr': {'class': 'form-control'}}) }}
+                        {% for error in changePasswordForm.plainPassword.first.vars.errors %}
+                            <div class="text-danger">{{ error.message }}</div>
+                        {% endfor %}
+                    </div>
+
+                    {# Campo: Repetir contraseña #}
+                    <div class="mb-3">
+                        {{ form_label(changePasswordForm.plainPassword.second, 'Repetir contraseña:', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(changePasswordForm.plainPassword.second, {'attr': {'class': 'form-control'}}) }}
+
+                        {% for error in changePasswordForm.plainPassword.second.vars.errors %}
+                            <div class="text-danger">{{ error.message }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-warning">Cambiar</button>
+                    </div>
+
+                    {{ form_end(changePasswordForm) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

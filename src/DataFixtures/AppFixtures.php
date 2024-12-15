@@ -31,9 +31,9 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         $teacher = new Teacher();
-        $teacher->setNickname('uwu');
+        $teacher->setNickname('maria');
         $teacher->setFirstName('Maria');
-        $teacher->setLastName('Keeper');
+        $teacher->setLastName('Del Moral');
         $teacher->setPassword(
             $this->passwordHasher->hashPassword($teacher, '1234')
         );

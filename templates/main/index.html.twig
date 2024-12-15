@@ -3,10 +3,33 @@
 {% block title %}Proyely{% endblock %}
 
 {% block content %}
-    <h1>Proyely</h1>
-    <div class="card">
-        <h2 class="card-title">¿Qué es?</h2>
-        <p class="card-body">PROYELY es una aplicación diseñada para abordar la gestión y automatización del proceso de asignación
-            de proyectos propuestos para el alumnado.</p>
+    <div class="container mt-5">
+        <header class="text-center mb-4">
+            <h1 class="display-4">Proyely</h1>
+            <p class="lead text-muted">Simplificando la asignación de proyectos para el alumnado y docentes.</p>
+        </header>
+
+        <section class="bg-light p-4 rounded shadow-sm">
+            <h2 class="h3 mb-3"><i class="fas fa-question-circle"></i> ¿Qué es?</h2>
+            <p>
+                <strong>Proyely</strong> es una aplicación diseñada para facilitar la asignación y gestión de proyectos
+                académicos, proporcionando a estudiantes, docentes y administradores una plataforma intuitiva y eficiente.
+            </p>
+        </section>
+
+        <section class="mt-4 p-4 rounded shadow-sm" style="background: linear-gradient(135deg, #F5FAFE, #B4CAD1);">
+            <h2 class="h3 mb-3"><i class="fas fa-bullseye"></i> Objetivos</h2>
+            <ul class="list-unstyled">
+                <li><i class="fas fa-check-circle text-success"></i> Automatizar el proceso de asignación de proyectos.</li>
+                <li><i class="fas fa-check-circle text-success"></i> Gestión de proyectos para los docentes.</li>
+                <li><i class="fas fa-check-circle text-success"></i> Facilitar al estudiante la elección del proyecto final.</li>
+            </ul>
+        </section>
+
+        <footer class="text-center mt-5 text-muted">
+            <p>Desarrollado para optimizar la experiencia educativa. <i class="fas fa-laptop-code"></i></p>
+            <p>IES Oretania <i class="fa-solid fa-school"></i></p>
+            <p>María Del Moral Cobo <i class="fa-regular fa-face-smile"></i></p>
+        </footer>
     </div>
 {% endblock %}

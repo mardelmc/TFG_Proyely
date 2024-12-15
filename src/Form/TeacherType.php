@@ -6,6 +6,7 @@ use App\Entity\Group;
 use App\Entity\Teacher;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -54,16 +55,32 @@ class TeacherType extends AbstractType
                 'required' => false,
                 'attr' => ['class' => 'form-control'],
             ])
-           ;
+            ->add('isAdmin', CheckboxType::class, [
+                'label' => 'Asignar rol de administrador',
+                'mapped' => false, // No mapeamos directamente en la entidad
+                'required' => false,
+                'attr' => ['class' => 'form-check-input'],
+            ]);
 
         $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
-            /** @var Teacher $teacher */
             $teacher = $event->getData();
+            $form = $event->getForm();
 
             if ($teacher->getPassword()) {
                 $hashedPassword = $this->passwordHasher->hashPassword($teacher, $teacher->getPassword());
                 $teacher->setPassword($hashedPassword);
             }
+
+            $isAdmin = $form->get('isAdmin')->getData();
+            $roles = $teacher->getRoles();
+
+            if ($isAdmin && !in_array('ROLE_ADMIN', $roles, true)) {
+                $roles[] = 'ROLE_ADMIN';
+            } elseif (!$isAdmin && in_array('ROLE_ADMIN', $roles, true)) {
+                $roles = array_filter($roles, fn($role) => $role !== 'ROLE_ADMIN');
+            }
+
+            $teacher->setRoles($roles);
         });
     }
 

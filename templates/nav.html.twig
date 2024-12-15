@@ -1,23 +1,18 @@
 {% set current_path = app.request.get('_route')|split('_') %}
 <nav class="navbar fixed-top navbar-dark bg-dark bg-mine">
     <div class="container-fluid">
-        <!-- Branding -->
         <a class="navbar-brand" href="{{ path('menu') }}">
             <img src="" alt=""> Proyely
         </a>
 
-        <!-- Navigation Controls -->
         <div class="d-flex align-items-center">
-            <!-- Back Button -->
             <button class="btn btn-outline-light me-3" onclick="window.history.back();">
                 <i class="fa-solid fa-arrow-left"></i> Atrás
             </button>
-            <!-- User Info -->
             <div class="ms-3 d-flex align-items-center">
                 <i class="fa-solid fa-user-circle fa-2x text-white"></i>
                 <span class="text-white ms-2"><a class="link-light link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="{{ path('profile') }}">{{ app.user ? app.user : 'Not Found' }}</a></span>
             </div>
-            <!-- Offcanvas Toggle -->
             <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -25,7 +20,7 @@
     </div>
 
     <!-- Offcanvas Menu -->
-    <div class="offcanvas offcanvas-start bg-dark text-white bg-mine" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
+    <div class="offcanvas offcanvas-end bg-dark text-white bg-mine" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
         <div class="offcanvas-header">
             <!-- Offcanvas Header -->
             <h5 class="offcanvas-title" id="offcanvasMenuLabel">Proyely</h5>

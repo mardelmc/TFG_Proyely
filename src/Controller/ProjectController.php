@@ -90,10 +90,10 @@ public function __construct(LoggerInterface $logger)
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
             try {
-$this->logger->info('project proposed', ['project' => $project->getProposedBy()]);
-$this->logger->info('project name', ['project' => $project->getName()]);
-//$this->logger->info('Saving project', ['project' => $project->getStudent()->getId()]);
-$this->logger->info('Saving project', ['project' => $project->getProposedBy()->getId()]);
+                $this->logger->info('project proposed', ['project' => $project->getProposedBy()]);
+                $this->logger->info('project name', ['project' => $project->getName()]);
+                //$this->logger->info('Saving project', ['project' => $project->getStudent()->getId()]);
+                $this->logger->info('Saving project', ['project' => $project->getProposedBy()->getId()]);
                 $projectRepository->save();
                 $this->addFlash('success', 'The project has been registered succesfully');
                 return $this->redirectToRoute('listProject');
@@ -121,6 +121,7 @@ $this->logger->info('Saving project', ['project' => $project->getProposedBy()->g
                 $this->addFlash('success', 'Proyecto eliminado con éxito');
                 return $this->redirectToRoute('listProject');
             } catch (\Exception $e) {
+                $this->logger->error('error deleting project', ['error' => $e->getMessage()]);
                 $this->addFlash('error', 'No se ha podido eliminar el proyecto');
             }
         }

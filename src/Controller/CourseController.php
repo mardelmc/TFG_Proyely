@@ -12,6 +12,7 @@ use App\Repository\AcademicYearRepository;
 use App\Repository\GroupRepository;
 use App\Repository\SubjectRepository;
 use Knp\Component\Pager\PaginatorInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,6 +20,11 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class CourseController extends AbstractController
 {
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
     //Groups
     #[Route('/listGroups', name: 'listGroups')]
     public function listGroups(
@@ -60,9 +66,11 @@ class CourseController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $groupRepository->add($group);
+                $groupRepository->save();
                 $this->addFlash('success', 'El grupo ha sido añadido.');
                 return $this->redirectToRoute('listGroups');
             } catch (\Exception $e) {
+                $this->logger->error('Error creating group', ['message' => $e->getMessage()]);
                 $this->addFlash('error', 'El grupo no se ha guardado. Error: ' . $e->getMessage());
             }
         }
@@ -158,9 +166,11 @@ class CourseController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $subjectRepository->add($subject);
+                $subjectRepository->save();
                 $this->addFlash('success', 'El módulo ha sido añadido.');
                 return $this->redirectToRoute('listSubjects');
             } catch (\Exception $e) {
+                $this->logger->error('Error creating module', ['message' => $e->getMessage()]);
                 $this->addFlash('error', 'El módulo no se ha guardado. Error: ' . $e->getMessage());
             }
         }

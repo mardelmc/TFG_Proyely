@@ -3,14 +3,34 @@
 {% block content %}
     <div class="container">
         <h1>Nuevo año escolar</h1>
-        {{ form_start(form) }}
+        {{ form_start(form, { 'attr': {'id': 'academicYearForm'} }) }}
         {{ form_widget(form) }}
+        <div class="alert alert-danger d-none" id="dateError">La fecha de finalización no puede ser anterior a la fecha de inicio.</div>
         <button type="submit" class="btn btn-primary">Guardar</button>
         <a href="{{ path('listAcademicYears') }}" class="btn btn-info">Volver al listado</a>
         {{ form_end(form) }}
     </div>
+    <script>
+        // Restricción de fecha
+        document.getElementById('academicYearForm').addEventListener('submit', function(event) {
+            const startDate = document.querySelector('[name="academic_year[startDate]"]').value;
+            const endDate = document.querySelector('[name="academic_year[endDate]"]').value;
+
+            const startDateObj = new Date(startDate);
+            const endDateObj = new Date(endDate);
+
+            const errorDiv = document.getElementById('dateError');
+
+            if (endDateObj < startDateObj) {
+                event.preventDefault();
+                errorDiv.classList.remove('d-none');
+            } else {
+                errorDiv.classList.add('d-none');
+            }
+        });
+    </script>
 {% endblock %}
 
 {% block title %}
-
+    Nuevo año escolar
 {% endblock %}

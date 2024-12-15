@@ -14,7 +14,7 @@ class StudentProjectPriority
 
     #[ORM\Id]
     #[ORM\ManyToOne(targetEntity: Project::class)]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private ?Project $project = null;
 
     #[ORM\Column(type: 'integer', nullable: false)]
